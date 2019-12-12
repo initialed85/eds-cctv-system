@@ -45,6 +45,7 @@ RUN mkdir -p /etc/motion/conf.d
 
 COPY --from=go_build /srv/motion_log_event_streamer /usr/local/bin/motion_log_event_streamer
 
+COPY docker/config.py /srv/config.py
 COPY docker/event_parser.py /srv/event_parser.py
 COPY docker/event_parser_loop.py /srv/event_parser_loop.py
 COPY docker/index.html /srv/root/index.html
