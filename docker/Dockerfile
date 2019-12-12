@@ -47,6 +47,7 @@ COPY --from=go_build /srv/motion_log_event_streamer /usr/local/bin/motion_log_ev
 
 COPY docker/event_parser.py /srv/event_parser.py
 COPY docker/event_parser_loop.py /srv/event_parser_loop.py
+COPY docker/index.html /srv/root/index.html
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
