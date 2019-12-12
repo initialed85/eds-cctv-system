@@ -5,23 +5,17 @@ RUN apt-get update && apt-get install -y \
     libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libavdevice-dev git autopoint
 
 WORKDIR /srv/
-
 RUN git clone https://github.com/Motion-Project/motion.git
 
 WORKDIR /srv/motion
-
 RUN autoreconf -fiv
-
 RUN ./configure --prefix=/
-
 RUN make
-
 RUN make install
 
 FROM golang:1.13 AS go_build
 
 WORKDIR /srv/
-
 COPY cmd /srv/cmd
 COPY internal /srv/internal
 COPY pkg /srv/pkg
@@ -33,11 +27,11 @@ RUN go build -o motion_log_event_streamer cmd/motion_log_event_streamer/main.go
 FROM ubuntu:18.04 AS run
 
 ENV TZ Australia/Perth
-
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
-    tzdata supervisor libjpeg8-dev libmicrohttpd-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libavdevice-dev
+    tzdata supervisor libjpeg8-dev libmicrohttpd-dev libavformat-dev libavcodec-dev libavutil-dev \
+    libswscale-dev libavdevice-dev nginx apache2-utils logrotate
 
 RUN dpkg-reconfigure -f noninteractive tzdata
 
@@ -51,17 +45,22 @@ RUN mkdir -p /etc/motion/conf.d
 
 COPY --from=go_build /srv/motion_log_event_streamer /usr/local/bin/motion_log_event_streamer
 
-COPY docker/eds-cctv-system-supervisor.conf /etc/supervisor/conf.d/
+RUN groupadd syslog
+RUN useradd nginx
 
+ENV WEB_USERNAME cctv
+ENV WEB_PASSWORD cctv123!@#
+RUN htpasswd -c -b /srv/nginx.htpasswd ${WEB_USERNAME} ${WEB_PASSWORD}
+
+COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh
 
-# motion webcontrol
+ENV TARGET_DIR /srv/target_dir/events
+ENV OUTPUT_PATH /srv/root/
+ENV BROWSE_URL_PREFIX /browse/
+
 EXPOSE 8080
-
-# motion stream
 EXPOSE 8081
-
-# motion_log_event_streamer
 EXPOSE 8082
 
 ENTRYPOINT ["/srv/entrypoint.sh"]
