@@ -2,6 +2,12 @@
 
 source env.sh
 
+test -e
+
+docker stop "${CONTAINER_NAME}" || true
+
+docker rm "${CONTAINER_NAME}" || true
+
 docker run \
   -d \
   --restart=always \
