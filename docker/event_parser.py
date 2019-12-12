@@ -109,7 +109,7 @@ def parse_events(target_dir, browse_url_prefix, run_timestamp=None):
         if picture is not None:
             pictures.pop(i)
         else:
-            picture = get_empty_file('missing.png')
+            picture = get_empty_file('events/missing.png')
 
         if picture.timestamp is not None:  # case when movie is there but picture isn't after n tries
             if (picture.timestamp - movie.timestamp).total_seconds() > 60 * 60:  # ditch if over an hour's difference

@@ -44,7 +44,7 @@ RUN htpasswd -c -b /srv/nginx.htpasswd ${WEB_USERNAME} ${WEB_PASSWORD}
 
 ENV TARGET_DIR /srv/target_dir/
 ENV OUTPUT_PATH /srv/root/
-ENV BROWSE_URL_PREFIX /browse/
+ENV BROWSE_URL_PREFIX /browse/events/
 
 EXPOSE 80
 EXPOSE 8080
