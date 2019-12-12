@@ -6,7 +6,7 @@ test -e
 
 docker stop "${CONTAINER_NAME}" || true
 
-docker rm "${CONTAINER_NAME}" || true
+docker rm -f "${CONTAINER_NAME}" || true
 
 docker run \
   -d \
