@@ -55,7 +55,7 @@ RUN htpasswd -c -b /srv/nginx.htpasswd ${WEB_USERNAME} ${WEB_PASSWORD}
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh
 
-ENV TARGET_DIR /srv/target_dir/events
+ENV TARGET_DIR /srv/target_dir/
 ENV OUTPUT_PATH /srv/root/
 ENV BROWSE_URL_PREFIX /browse/
 
