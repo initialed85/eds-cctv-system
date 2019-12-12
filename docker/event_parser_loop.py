@@ -2,7 +2,7 @@ import datetime
 import os
 import time
 
-from .event_parser import parse_events
+from event_parser import parse_events
 
 _PERIOD = 60
 

@@ -3,7 +3,7 @@ import os
 import unittest
 from collections import OrderedDict
 
-from .event_parser import parse_events
+from event_parser import parse_events
 
 _TIMESTAMP = datetime.datetime(year=1992, month=2, day=6, hour=13, minute=33, second=37)
 
