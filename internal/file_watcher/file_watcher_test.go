@@ -47,9 +47,9 @@ func TestFileWatcher(t *testing.T) {
 
 	path := filepath.Join(dir, "some_file.txt")
 
-	lastAdded := "initial"
+	lastAdded := []string{"initial"}
 
-	callback := func(added string) {
+	callback := func(timestamp time.Time, added []string) {
 		lastAdded = added
 	}
 
@@ -60,40 +60,40 @@ func TestFileWatcher(t *testing.T) {
 
 	go w.Watch()
 
-	time.Sleep(time.Millisecond)
-	assert.Equal(t, "initial", lastAdded) // nothing yet
+	time.Sleep(time.Millisecond * 100)
+	assert.Equal(t, []string{"initial"}, lastAdded) // nothing yet
 
 	err = writeToFile(path, "")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond)
-	assert.Equal(t, "", lastAdded) // file created
+	time.Sleep(time.Millisecond * 100)
+	assert.Equal(t, []string{""}, lastAdded) // file created
 
 	err = appendToFile(path, "The first line\nThe second line\n")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond)
-	assert.Equal(t, "The first line\nThe second line\n", lastAdded) // edit w/ trailing newline
+	time.Sleep(time.Millisecond * 100)
+	assert.Equal(t, []string{"The first line", "The second line"}, lastAdded) // edit w/ trailing newline
 
 	err = appendToFile(path, "The first line\nThe second line")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond)
-	assert.Equal(t, "The first line\nThe second line", lastAdded) // edit w/o trailing newline
+	time.Sleep(time.Millisecond * 100)
+	assert.Equal(t, []string{"The first line", "The second line"}, lastAdded) // edit w/o trailing newline
 
 	err = os.Remove(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond)
-	assert.Equal(t, "The first line\nThe second line", lastAdded) // no change
+	time.Sleep(time.Millisecond * 100)
+	assert.Equal(t, []string{"The first line", "The second line"}, lastAdded) // no change
 
 	w.Stop()
 }

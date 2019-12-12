@@ -14,6 +14,7 @@ func TestEventStreamer(t *testing.T) {
 	go func() {
 		err := eventStreamer.Listen()
 		if err != nil {
+			log.Fatal(err)
 		}
 	}()
 
@@ -25,7 +26,7 @@ func TestEventStreamer(t *testing.T) {
 	defer func() {
 		err = c.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("Close during test:", err)
 		}
 	}()
 
@@ -35,7 +36,9 @@ func TestEventStreamer(t *testing.T) {
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				log.Fatal(err)
+				log.Print(err)
+
+				break
 			}
 
 			lastMessage = string(message)
@@ -54,4 +57,9 @@ func TestEventStreamer(t *testing.T) {
 
 	time.Sleep(time.Millisecond * 100)
 	assert.Equal(t, "Okay, a even newer message\nOn multiple lines", lastMessage)
+
+	err = eventStreamer.Stop()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
