@@ -3,7 +3,6 @@
 source env.sh
 
 docker run \
-  --rm \
   -d \
   --restart=always \
   --name "${CONTAINER_NAME}" \
