@@ -5,7 +5,7 @@ source env.sh
 docker run \
   --rm \
   -it \
-  --name "${CONTAINER_NAME}" \
+  --name "${CONTAINER_NAME}"-build \
   -p 8080:8080 \
   -p 8081:8081 \
   -p 8082:8082 \
