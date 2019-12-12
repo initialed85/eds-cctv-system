@@ -2,7 +2,7 @@ import datetime
 import os
 import time
 
-from event_parser import parse_events
+from .event_parser import parse_events
 
 _PERIOD = 60
 
@@ -24,7 +24,7 @@ if __name__ == '__main__':
         try:
             _before = datetime.datetime.now()
 
-            _htmls = parse_events(os.path.join(_target_dir, _events), _browse_url_prefix)
+            _htmls = parse_events(os.path.join(_target_dir, 'events'), _browse_url_prefix)
 
             for _output_file, _html in _htmls.items():
                 with open(os.path.join(_output_path, _output_file), 'w') as f:

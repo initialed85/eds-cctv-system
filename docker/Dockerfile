@@ -35,6 +35,22 @@ RUN apt-get update && apt-get install -y \
 
 RUN dpkg-reconfigure -f noninteractive tzdata
 
+RUN groupadd syslog
+RUN useradd nginx
+
+ENV WEB_USERNAME cctv
+ENV WEB_PASSWORD cctv123!@#
+RUN htpasswd -c -b /srv/nginx.htpasswd ${WEB_USERNAME} ${WEB_PASSWORD}
+
+ENV TARGET_DIR /srv/target_dir/
+ENV OUTPUT_PATH /srv/root/
+ENV BROWSE_URL_PREFIX /browse/
+
+EXPOSE 80
+EXPOSE 8080
+EXPOSE 8081
+EXPOSE 8082
+
 COPY --from=motion_build /bin/motion /bin/motion
 COPY --from=motion_build /etc/motion/motion-dist.conf /etc/motion/examples/motion.conf
 COPY --from=motion_build /etc/motion/camera1-dist.conf /etc/motion/examples/camera1.conf
@@ -52,23 +68,7 @@ COPY docker/index.html /srv/root/index.html
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-RUN groupadd syslog
-RUN useradd nginx
-
-ENV WEB_USERNAME cctv
-ENV WEB_PASSWORD cctv123!@#
-RUN htpasswd -c -b /srv/nginx.htpasswd ${WEB_USERNAME} ${WEB_PASSWORD}
-
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh
-
-ENV TARGET_DIR /srv/target_dir/
-ENV OUTPUT_PATH /srv/root/
-ENV BROWSE_URL_PREFIX /browse/
-
-EXPOSE 80
-EXPOSE 8080
-EXPOSE 8081
-EXPOSE 8082
 
 ENTRYPOINT ["/srv/entrypoint.sh"]

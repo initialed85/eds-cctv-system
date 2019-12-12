@@ -4,7 +4,7 @@ import re
 import syslog
 from collections import namedtuple, OrderedDict
 
-from config import TIMESTAMP_PATTERN, FILE_NAME_PATTERN, EVENT_HTML_REPEATER, EVENT_HTML_TEMPLATE, STYLE_SHEET, \
+from .config import TIMESTAMP_PATTERN, FILE_NAME_PATTERN, EVENT_HTML_REPEATER, EVENT_HTML_TEMPLATE, STYLE_SHEET, \
     EVENTS_HTML_REPEATER, EVENTS_HTML_TEMPLATE
 
 File = namedtuple('File', ['size', 'name', 'prefix', 'timestamp'])
