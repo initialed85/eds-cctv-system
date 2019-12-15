@@ -79,7 +79,7 @@ def get_files(target_dir):
 
 
 def get_movies(files):
-    return [x for x in files if x.name.endswith('.mkv')]
+    return [x for x in files if x.name.endswith('.mkv') or x.name.endswith('.mp4')]
 
 
 def get_pictures(files):
