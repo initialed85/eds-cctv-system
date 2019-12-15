@@ -1,26 +1,14 @@
 package motion_log_event_handler
 
 import (
+	"eds-cctv-system/internal/common"
 	"eds-cctv-system/internal/file_converter"
 	"eds-cctv-system/internal/file_watcher"
 	"eds-cctv-system/internal/motion_log"
-	"fmt"
 	"github.com/google/uuid"
 	"log"
-	"path/filepath"
-	"strings"
 	"time"
 )
-
-func getLowResPath(path string) string {
-	extension := filepath.Ext(path)
-
-	parts := strings.Split(path, extension)
-
-	part := strings.Join(parts[0:len(parts)-1], extension)
-
-	return fmt.Sprintf("%v-lowres%v", part, extension)
-}
 
 type RelatedEvent struct {
 	MotionStart     *motion_log.Event
@@ -45,7 +33,7 @@ func New(filePath string) (MotionLogEventHandler, error) {
 		relatedEvents: make(map[uuid.UUID]RelatedEvent),
 	}
 
-	fileWatcher, err := file_watcher.New(filePath, m.fileWatchCallback)
+	fileWatcher, err := file_watcher.New(filePath, m.fileWatcherCallback)
 	if err != nil {
 		return MotionLogEventHandler{}, err
 	}
@@ -55,7 +43,7 @@ func New(filePath string) (MotionLogEventHandler, error) {
 	return m, nil
 }
 
-func (m *MotionLogEventHandler) fileWatchCallback(timestamp time.Time, lines []string) {
+func (m *MotionLogEventHandler) fileWatcherCallback(timestamp time.Time, lines []string) {
 	for _, line := range lines {
 		event, err := motion_log.ParseLine(timestamp, line)
 		if err != nil {
@@ -81,11 +69,9 @@ func (m *MotionLogEventHandler) fileWatchCallback(timestamp time.Time, lines []s
 
 		m.relatedEvents[event.EventId] = relatedEvent
 
-		log.Println(event, relatedEvent, relatedEvent.IsComplete())
-
 		if relatedEvent.IsComplete() {
 			highResVideoPath := relatedEvent.SaveVideo.FilePath
-			lowResVideoPath := getLowResPath(highResVideoPath)
+			lowResVideoPath := common.GetLowResPath(highResVideoPath)
 			_, stderr, err := file_converter.ConvertVideo(highResVideoPath, lowResVideoPath, 640, 480)
 			if err != nil {
 				log.Printf("failed to convert %v to %v because %v; stderr=%v", highResVideoPath, lowResVideoPath, err, stderr)
@@ -94,7 +80,7 @@ func (m *MotionLogEventHandler) fileWatchCallback(timestamp time.Time, lines []s
 			log.Printf("converted %v to %v", highResVideoPath, lowResVideoPath)
 
 			highResImagePath := relatedEvent.SaveImage.FilePath
-			lowResImagePath := getLowResPath(highResImagePath)
+			lowResImagePath := common.GetLowResPath(highResImagePath)
 			_, stderr, err = file_converter.ConvertImage(highResImagePath, lowResImagePath, 640, 480)
 			if err != nil {
 				log.Printf("failed to convert %v to %v because %v; stderr=%v", highResImagePath, lowResImagePath, err, stderr)

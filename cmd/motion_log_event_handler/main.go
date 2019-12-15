@@ -21,7 +21,6 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
 	filePath := flag.String("filePath", "", "Path to log file for Motion STDOUT and STDERR")
-	port := flag.Int64("port", 0, "Port for WebSocket server to listen on")
 
 	flag.Parse()
 
@@ -29,13 +28,9 @@ func main() {
 		log.Fatal("filePath cannot be empty")
 	}
 
-	if *port == 0 {
-		log.Fatal("port cannot be empty")
-	}
-
 	log.Printf("creating")
 
-	m, err := motion_log_event_handler.New(*filePath, *port)
+	m, err := motion_log_event_handler.New(*filePath)
 	if err != nil {
 		log.Fatalf("failed to create MotionLogEventHandler because: %v", err)
 	}

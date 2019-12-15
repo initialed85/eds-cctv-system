@@ -23,6 +23,8 @@ COPY go.mod /srv/go.mod
 COPY go.sum /srv/go.sum
 
 RUN go build -o motion_config_segment_recorder cmd/motion_config_segment_recorder/main.go
+RUN go build -o motion_log_event_handler cmd/motion_log_event_handler/main.go
+RUN go build -o segment_folder_event_handler cmd/segment_folder_event_handler/main.go
 
 FROM ubuntu:18.04 AS run
 
@@ -31,7 +33,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
     tzdata supervisor libjpeg8-dev libmicrohttpd-dev libavformat-dev libavcodec-dev libavutil-dev \
-    libswscale-dev libavdevice-dev ffmpeg x264
+    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick
 
 RUN dpkg-reconfigure -f noninteractive tzdata
 
@@ -48,6 +50,8 @@ COPY --from=motion_build /etc/motion/camera3-dist.conf /etc/motion/examples/came
 RUN mkdir -p /etc/motion/conf.d
 
 COPY --from=go_build /srv/motion_config_segment_recorder /usr/local/bin/motion_config_segment_recorder
+COPY --from=go_build /srv/motion_log_event_handler /usr/local/bin/motion_log_event_handler
+COPY --from=go_build /srv/segment_folder_event_handler /usr/local/bin/segment_folder_event_handler
 
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh

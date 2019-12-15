@@ -2,9 +2,12 @@ package common
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -48,4 +51,14 @@ func RunBackgroundProcess(executable string, arguments ...string) (*os.Process, 
 	}
 
 	return cmd.Process, nil
+}
+
+func GetLowResPath(path string) string {
+	extension := filepath.Ext(path)
+
+	parts := strings.Split(path, extension)
+
+	part := strings.Join(parts[0:len(parts)-1], extension)
+
+	return fmt.Sprintf("%v-lowres%v", part, extension)
 }
