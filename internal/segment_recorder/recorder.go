@@ -1,0 +1,39 @@
+package segment_recorder
+
+import (
+	"eds-cctv-system/internal/common"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+)
+
+// ffmpeg -rtsp_transport tcp -i rtsp://192.168.137.31:554/Streaming/Channels/101 -c copy -map 0 -f segment -segment_time 60 -segment_format mp4 -segment_atclocktime 1 -strftime 1 -g 10 /srv/target_dir/segments/Segment_%Y-%m-%d_%H-%M-%S_Driveway.mp4
+func RecordSegments(netCamURL, destinationPath, cameraName string, duration int) (*os.Process, error) {
+	log.Printf("recording %v second segments from %v to %v for %v", duration, netCamURL, destinationPath, cameraName)
+
+	return common.RunBackgroundProcess(
+		"ffmpeg",
+		"-rtsp_transport",
+		"tcp",
+		"-i",
+		netCamURL,
+		"-c",
+		"copy",
+		"-map",
+		"0",
+		"-f",
+		"segment",
+		"-segment_time",
+		fmt.Sprintf("%v", duration),
+		"-segment_format",
+		"mp4",
+		"-segment_atclocktime",
+		"1",
+		"-strftime",
+		"1",
+		"-g",
+		"10",
+		filepath.Join(destinationPath, "Segment_%Y-%m-%d_%H-%M-%S_"+cameraName+".mp4"),
+	)
+}

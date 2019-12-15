@@ -2,6 +2,12 @@
 
 source env.sh
 
+set -e
+
+mkdir output || true
+mkdir -p output/events || true
+mkdir -p output/segments || true
+
 docker run \
   --rm \
   -it \
@@ -9,6 +15,7 @@ docker run \
   -p 8080:8080 \
   -p 8081:8081 \
   -p 8082:8082 \
-  -v "$(pwd)"/configs:/etc/motion \
-  -v "$(pwd)"/output:/srv/target_dir \
+  -v "$(pwd)"/motion-configs:/etc/motion \
+  -v "$(pwd)"/output/events:/srv/target_dir/events \
+  -v "$(pwd)"/output/segments:/srv/target_dir/segments \
   "${IMAGE_NAME}"

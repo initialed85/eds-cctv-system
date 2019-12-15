@@ -40,7 +40,7 @@ func appendToFile(path, data string) error {
 }
 
 func TestFileWatcher(t *testing.T) {
-	dir, err := ioutil.TempDir("", "watcher_test")
+	dir, err := ioutil.TempDir("", "file_watcher_test")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,7 +68,7 @@ func TestFileWatcher(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second)
 	assert.Equal(t, []string{""}, lastAdded) // file created
 
 	err = appendToFile(path, "The first line\nThe second line\n")

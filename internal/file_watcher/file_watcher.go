@@ -6,6 +6,7 @@ import (
 	"github.com/kylelemons/godebug/diff"
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 	"time"
 )
@@ -75,17 +76,19 @@ func (f *FileWatcher) Watch() {
 	defer func() {
 		err := f.watcher.Close()
 		if err != nil {
-			log.Printf("closing watch during defer caused %v", err)
+			log.Printf("closing watcher during defer caused %v", err)
 		}
 	}()
 
 	fileDidNotPreviouslyExist := false
 
 	for {
+		_ = f.watcher.Remove(f.path)
+
 		err := f.watcher.Add(f.path)
 		if err != nil {
 			if !fileDidNotPreviouslyExist {
-				log.Printf("failed to add to file watcher because %v; will keep trying", err)
+				log.Printf("failed to add path to watcher because %v; will keep trying", err)
 			}
 
 			time.Sleep(time.Millisecond * 100)
@@ -95,10 +98,23 @@ func (f *FileWatcher) Watch() {
 			continue
 		}
 
-		log.Printf("file exists; added watcher")
+		info, err := os.Stat(f.path)
+		if err != nil {
+			log.Printf("failed to get stat for path; will try again later")
+
+			continue
+		}
+
+		if info.IsDir() {
+			log.Printf("path exists but is a directory; will try again later")
+
+			continue
+		}
+
+		log.Printf("path exists; added file_watcher")
 
 		if fileDidNotPreviouslyExist {
-			log.Printf("file did not previously exist; calling handle")
+			log.Printf("path did not previously exist; calling handle")
 
 			f.handle(time.Now())
 

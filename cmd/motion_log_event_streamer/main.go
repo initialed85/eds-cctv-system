@@ -1,7 +1,7 @@
 package main
 
 import (
-	"eds-cctv-system/pkg/motion_log_event_streamer"
+	"eds-cctv-system/pkg/motion_log_event_handler"
 	"flag"
 	"log"
 	"os"
@@ -35,9 +35,9 @@ func main() {
 
 	log.Printf("creating")
 
-	m, err := motion_log_event_streamer.New(*filePath, *port)
+	m, err := motion_log_event_handler.New(*filePath, *port)
 	if err != nil {
-		log.Fatalf("failed to create MotionLogEventStreamer because: %v", err)
+		log.Fatalf("failed to create MotionLogEventHandler because: %v", err)
 	}
 
 	log.Printf("starting")
@@ -52,7 +52,7 @@ func main() {
 
 	err = m.Stop()
 	if err != nil {
-		log.Fatalf("failed to stop MotionLogEventStreamer because: %v", err)
+		log.Fatalf("failed to stop MotionLogEventHandler because: %v", err)
 	}
 
 	log.Printf("stopped")
