@@ -1,7 +1,7 @@
 package main
 
 import (
-	"eds-cctv-system/pkg/motion_config_segment_recorder"
+	"github.com/initialed85/eds-cctv-system/pkg/motion_config_segment_recorder"
 	"flag"
 	"log"
 	"os"

@@ -1,8 +1,8 @@
 package motion_config_segment_recorder
 
 import (
-	"eds-cctv-system/internal/motion_config"
-	"eds-cctv-system/internal/segment_recorder"
+	"github.com/initialed85/eds-cctv-system/internal/motion_config"
+	"github.com/initialed85/eds-cctv-system/internal/segment_recorder"
 	"log"
 	"os"
 )

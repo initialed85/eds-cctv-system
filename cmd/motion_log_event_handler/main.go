@@ -1,7 +1,7 @@
 package main
 
 import (
-	"eds-cctv-system/pkg/motion_log_event_handler"
+	"github.com/initialed85/eds-cctv-system/pkg/motion_log_event_handler"
 	"flag"
 	"log"
 	"os"

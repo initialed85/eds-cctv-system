@@ -1,8 +1,8 @@
 package file_converter
 
 import (
-	"eds-cctv-system/internal/common"
 	"fmt"
+	"github.com/initialed85/eds-cctv-system/internal/common"
 	"log"
 )
 

@@ -1,10 +1,10 @@
 package segment_folder_event_handler
 
 import (
-	"eds-cctv-system/internal/common"
-	"eds-cctv-system/internal/file_converter"
-	"eds-cctv-system/internal/folder_watcher"
-	"eds-cctv-system/internal/thumbnail_creator"
+	"github.com/initialed85/eds-cctv-system/internal/common"
+	"github.com/initialed85/eds-cctv-system/internal/file_converter"
+	"github.com/initialed85/eds-cctv-system/internal/folder_watcher"
+	"github.com/initialed85/eds-cctv-system/internal/thumbnail_creator"
 	"fmt"
 	"log"
 	"path/filepath"

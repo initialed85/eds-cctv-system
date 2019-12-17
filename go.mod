@@ -1,4 +1,4 @@
-module eds-cctv-system
+module github.com/initialed85/eds-cctv-system
 
 go 1.12
 

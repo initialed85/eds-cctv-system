@@ -1,10 +1,10 @@
 package motion_log_event_handler
 
 import (
-	"eds-cctv-system/internal/common"
-	"eds-cctv-system/internal/file_converter"
-	"eds-cctv-system/internal/file_watcher"
-	"eds-cctv-system/internal/motion_log"
+	"github.com/initialed85/eds-cctv-system/internal/common"
+	"github.com/initialed85/eds-cctv-system/internal/file_converter"
+	"github.com/initialed85/eds-cctv-system/internal/file_watcher"
+	"github.com/initialed85/eds-cctv-system/internal/motion_log"
 	"github.com/google/uuid"
 	"log"
 	"time"

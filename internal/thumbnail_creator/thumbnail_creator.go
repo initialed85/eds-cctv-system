@@ -1,7 +1,7 @@
 package thumbnail_creator
 
 import (
-	"eds-cctv-system/internal/common"
+	"github.com/initialed85/eds-cctv-system/internal/common"
 	"log"
 )
 
