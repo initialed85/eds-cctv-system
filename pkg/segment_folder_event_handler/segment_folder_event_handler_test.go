@@ -28,8 +28,6 @@ func TestSegmentFolderEventHandler(t *testing.T) {
 		_ = os.Remove("../../test_files/Segment_c_Driveway-lowres.jpg")
 	}()
 
-	assert.True(t, true)
-
 	var lastTimestamp time.Time
 	var lastHighResImagePath string
 	var lastLowResImagePath string

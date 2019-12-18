@@ -1,6 +1,7 @@
 package motion_log_event_handler
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"log"
@@ -47,6 +48,30 @@ func appendToFile(path, data string) error {
 }
 
 func TestMotionLogEventStreamer(t *testing.T) {
+	var lastTimestamp time.Time
+	var lastHighResImagePath string
+	var lastLowResImagePath string
+	var lastHighResVideoPath string
+	var lastLowResVideoPath string
+
+	_ = lastTimestamp
+	_ = lastHighResImagePath
+	_ = lastLowResImagePath
+	_ = lastHighResVideoPath
+	_ = lastLowResVideoPath
+
+	callback := func(timestamp time.Time, highResImagePath string, lowResImagePath string, highResVideoPath string, lowResVideoPath string) error {
+		fmt.Println(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+
+		lastTimestamp = timestamp
+		lastHighResImagePath = highResImagePath
+		lastLowResImagePath = lowResImagePath
+		lastHighResVideoPath = highResVideoPath
+		lastLowResVideoPath = lowResVideoPath
+
+		return nil
+	}
+
 	dir, err := ioutil.TempDir("", "watcher_test")
 	if err != nil {
 		log.Fatal(err)
@@ -54,53 +79,73 @@ func TestMotionLogEventStreamer(t *testing.T) {
 
 	path := filepath.Join(dir, "some_file.txt")
 
-	w, err := New(path)
+	w, err := New(path, callback)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	w.Start()
 
-	time.Sleep(time.Millisecond * 100)
-
-	lastMessage := "initial"
-
-	time.Sleep(time.Millisecond * 100)
-	assert.Equal(t, "initial", lastMessage)
+	time.Sleep(time.Second)
+	assert.Equal(t, "", lastHighResImagePath)
+	assert.Equal(t, "", lastLowResImagePath)
+	assert.Equal(t, "", lastHighResVideoPath)
+	assert.Equal(t, "", lastLowResVideoPath)
 
 	err = writeToFile(path, "")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
-	assert.Equal(t, "initial", lastMessage)
+	time.Sleep(time.Second)
+	assert.Equal(t, "", lastHighResImagePath)
+	assert.Equal(t, "", lastLowResImagePath)
+	assert.Equal(t, "", lastHighResVideoPath)
+	assert.Equal(t, "", lastLowResVideoPath)
 
 	err = appendToFile(path, lines[0]+"\n")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	time.Sleep(time.Second)
+	assert.Equal(t, "", lastHighResImagePath)
+	assert.Equal(t, "", lastLowResImagePath)
+	assert.Equal(t, "", lastHighResVideoPath)
+	assert.Equal(t, "", lastLowResVideoPath)
+
 	err = appendToFile(path, lines[1]+"\n")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second)
+	assert.Equal(t, "", lastHighResImagePath)
+	assert.Equal(t, "", lastLowResImagePath)
+	assert.Equal(t, "", lastHighResVideoPath)
+	assert.Equal(t, "", lastLowResVideoPath)
 
 	err = appendToFile(path, lines[2]+"\n")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second)
+	assert.Equal(t, "", lastHighResImagePath)
+	assert.Equal(t, "", lastLowResImagePath)
+	assert.Equal(t, "", lastHighResVideoPath)
+	assert.Equal(t, "", lastLowResVideoPath)
 
 	err = appendToFile(path, lines[3]+"\n")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__SideGate.jpg", lastHighResImagePath)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__SideGate-lowres.jpg", lastLowResImagePath)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv", lastHighResVideoPath)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-29__SideGate-lowres.mkv", lastLowResVideoPath)
 
 	err = w.Stop()
 	if err != nil {

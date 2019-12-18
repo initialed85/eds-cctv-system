@@ -7,8 +7,7 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/gorilla/websocket v1.4.1
 	github.com/kylelemons/godebug v1.1.0
-	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.4.0
+	github.com/wlredeye/jsonlines v0.0.0-20160904163743-36b5e1bd13d0
 	golang.org/x/sys v0.0.0-20191210023423-ac6580df4449 // indirect
-	gopkg.in/ini.v1 v1.51.0
 )

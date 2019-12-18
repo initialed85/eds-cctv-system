@@ -1,12 +1,14 @@
 package main
 
 import (
-	"github.com/initialed85/eds-cctv-system/pkg/motion_log_event_handler"
 	"flag"
+	"github.com/initialed85/eds-cctv-system/pkg/event_persistence"
+	"github.com/initialed85/eds-cctv-system/pkg/motion_log_event_handler"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func waitForCtrlC() {
@@ -21,6 +23,7 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
 	filePath := flag.String("filePath", "", "Path to log file for Motion STDOUT and STDERR")
+	jsonLinesPath := flag.String("jsonLinesPath", "", "Path to JSONLines output file")
 
 	flag.Parse()
 
@@ -28,9 +31,30 @@ func main() {
 		log.Fatal("filePath cannot be empty")
 	}
 
+	if *jsonLinesPath == "" {
+		log.Fatal("jsonLinesPath cannot be empty")
+	}
+
+	callback := func(timestamp time.Time, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
+		event := event_persistence.Event{
+			Timestamp:        timestamp,
+			HighResImagePath: highResImagePath,
+			LowResImagePath:  lowResImagePath,
+			HighResVideoPath: highResVideoPath,
+			LowResVideoPath:  lowResVideoPath,
+		}
+
+		err := event_persistence.WriteJSONLine(event, *jsonLinesPath)
+		if err != nil {
+			log.Printf("failed to write JSONLine because: %v", err)
+		}
+
+		return nil
+	}
+
 	log.Printf("creating")
 
-	m, err := motion_log_event_handler.New(*filePath)
+	m, err := motion_log_event_handler.New(*filePath, callback)
 	if err != nil {
 		log.Fatalf("failed to create MotionLogEventHandler because: %v", err)
 	}

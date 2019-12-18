@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source env.sh
-
 set -e
 
 go test ./internal/file_watcher
@@ -15,6 +13,7 @@ go test ./internal/motion_config
 go test ./internal/folder_watcher
 go test ./internal/file_converter
 
+go test ./pkg/event_persistence
 go test ./pkg/segment_folder_event_handler
 go test ./pkg/motion_log_event_handler
 go test ./pkg/motion_config_segment_recorder

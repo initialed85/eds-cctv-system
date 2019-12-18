@@ -40,13 +40,14 @@ func appendToFile(path, data string) error {
 }
 
 func TestFolderWatcher(t *testing.T) {
-	dir, err := ioutil.TempDir("", "file_watcher_test")
+	dir, err := ioutil.TempDir("", "folder_watcher_test")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	path1 := filepath.Join(dir, "Segment_2019-12-15_22-04-28_Driveway.mp4")
 	path2 := filepath.Join(dir, "Segment_2019-12-15_22-04-58_Driveway.mp4")
+	path3 := filepath.Join(dir, "Segment_2019-12-15_22-05-28_Driveway.mp4")
 
 	lastPath := "initial"
 
@@ -61,38 +62,30 @@ func TestFolderWatcher(t *testing.T) {
 
 	go f.Watch()
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second)
 	assert.Equal(t, "initial", lastPath)
 
-	err = writeToFile(path1, "")
+	err = writeToFile(path1, "some data")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second)
 	assert.Equal(t, "initial", lastPath)
 
-	err = writeToFile(path2, "")
+	err = writeToFile(path2, "some data")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second)
 	assert.Equal(t, path1, lastPath)
 
-	err = appendToFile(path1, "")
+	err = writeToFile(path3, "some data")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second)
 	assert.Equal(t, path2, lastPath)
-
-	err = appendToFile(path2, "")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	time.Sleep(time.Millisecond * 100)
-	assert.Equal(t, path1, lastPath)
 }

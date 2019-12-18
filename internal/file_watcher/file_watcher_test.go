@@ -42,7 +42,7 @@ func appendToFile(path, data string) error {
 func TestFileWatcher(t *testing.T) {
 	dir, err := ioutil.TempDir("", "file_watcher_test")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("during test: %v", err)
 	}
 
 	path := filepath.Join(dir, "some_file.txt")
@@ -55,7 +55,7 @@ func TestFileWatcher(t *testing.T) {
 
 	w, err := New(path, callback)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("during test: %v", err)
 	}
 
 	go w.Watch()
@@ -65,7 +65,7 @@ func TestFileWatcher(t *testing.T) {
 
 	err = writeToFile(path, "")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("during test: %v", err)
 	}
 
 	time.Sleep(time.Second)
@@ -73,7 +73,7 @@ func TestFileWatcher(t *testing.T) {
 
 	err = appendToFile(path, "The first line\nThe second line\n")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("during test: %v", err)
 	}
 
 	time.Sleep(time.Millisecond * 100)
@@ -81,7 +81,7 @@ func TestFileWatcher(t *testing.T) {
 
 	err = appendToFile(path, "The first line\nThe second line")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("during test: %v", err)
 	}
 
 	time.Sleep(time.Millisecond * 100)
@@ -89,7 +89,7 @@ func TestFileWatcher(t *testing.T) {
 
 	err = os.Remove(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("during test: %v", err)
 	}
 
 	time.Sleep(time.Millisecond * 100)

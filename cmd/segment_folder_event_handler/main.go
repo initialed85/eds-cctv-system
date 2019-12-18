@@ -1,12 +1,14 @@
 package main
 
 import (
-	"github.com/initialed85/eds-cctv-system/pkg/segment_folder_event_handler"
 	"flag"
+	"github.com/initialed85/eds-cctv-system/pkg/event_persistence"
+	"github.com/initialed85/eds-cctv-system/pkg/segment_folder_event_handler"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func waitForCtrlC() {
@@ -21,6 +23,7 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
 	folderPath := flag.String("folderPath", "", "Path to segment folder")
+	jsonLinesPath := flag.String("jsonLinesPath", "", "Path to JSONLines output file")
 
 	flag.Parse()
 
@@ -28,9 +31,30 @@ func main() {
 		log.Fatal("folderPath cannot be empty")
 	}
 
+	if *jsonLinesPath == "" {
+		log.Fatal("jsonLinesPath cannot be empty")
+	}
+
+	callback := func(timestamp time.Time, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
+		event := event_persistence.Event{
+			Timestamp:        timestamp,
+			HighResImagePath: highResImagePath,
+			LowResImagePath:  lowResImagePath,
+			HighResVideoPath: highResVideoPath,
+			LowResVideoPath:  lowResVideoPath,
+		}
+
+		err := event_persistence.WriteJSONLine(event, *jsonLinesPath)
+		if err != nil {
+			log.Printf("failed to write JSONLine because: %v", err)
+		}
+
+		return nil
+	}
+
 	log.Printf("creating")
 
-	s, err := segment_folder_event_handler.New(*folderPath)
+	s, err := segment_folder_event_handler.New(*folderPath, callback)
 	if err != nil {
 		log.Fatalf("failed to create SegmentFolderEventHandler because: %v", err)
 	}

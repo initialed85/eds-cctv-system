@@ -1,11 +1,11 @@
 package motion_log_event_handler
 
 import (
+	"github.com/google/uuid"
 	"github.com/initialed85/eds-cctv-system/internal/common"
 	"github.com/initialed85/eds-cctv-system/internal/file_converter"
 	"github.com/initialed85/eds-cctv-system/internal/file_watcher"
 	"github.com/initialed85/eds-cctv-system/internal/motion_log"
-	"github.com/google/uuid"
 	"log"
 	"time"
 )
@@ -24,11 +24,12 @@ func (r *RelatedEvent) IsComplete() bool {
 }
 
 type MotionLogEventHandler struct {
-	fileWatcher   file_watcher.FileWatcher
+	fileWatcher   *file_watcher.FileWatcher
 	relatedEvents map[uuid.UUID]RelatedEvent
+	callback      func(time.Time, string, string, string, string) error
 }
 
-func New(filePath string) (MotionLogEventHandler, error) {
+func New(filePath string, callback func(time.Time, string, string, string, string) error) (MotionLogEventHandler, error) {
 	m := MotionLogEventHandler{
 		relatedEvents: make(map[uuid.UUID]RelatedEvent),
 	}
@@ -38,7 +39,8 @@ func New(filePath string) (MotionLogEventHandler, error) {
 		return MotionLogEventHandler{}, err
 	}
 
-	m.fileWatcher = fileWatcher
+	m.fileWatcher = &fileWatcher
+	m.callback = callback
 
 	return m, nil
 }
@@ -87,6 +89,13 @@ func (m *MotionLogEventHandler) fileWatcherCallback(timestamp time.Time, lines [
 			}
 
 			log.Printf("converted %v to %v", highResImagePath, lowResImagePath)
+
+			err = m.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+			if err != nil {
+				log.Printf("failed to call callback with timestamp=%v, highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v because %v", timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath, err)
+
+				return
+			}
 
 			delete(m.relatedEvents, event.EventId)
 		}
