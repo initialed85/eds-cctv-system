@@ -13,7 +13,7 @@ go test ./internal/motion_config
 go test ./internal/folder_watcher
 go test ./internal/file_converter
 
-go test ./pkg/event_persistence
+go test ./pkg/event_store
 go test ./pkg/segment_folder_event_handler
 go test ./pkg/motion_log_event_handler
 go test ./pkg/motion_config_segment_recorder

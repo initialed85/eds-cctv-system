@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/initialed85/eds-cctv-system/pkg/event_persistence"
+	"github.com/initialed85/eds-cctv-system/pkg/event_store"
 	"github.com/initialed85/eds-cctv-system/pkg/motion_log_event_handler"
 	"log"
 	"os"
@@ -36,7 +36,7 @@ func main() {
 	}
 
 	callback := func(timestamp time.Time, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
-		event := event_persistence.Event{
+		event := event_store.Event{
 			Timestamp:        timestamp,
 			HighResImagePath: highResImagePath,
 			LowResImagePath:  lowResImagePath,
@@ -44,7 +44,7 @@ func main() {
 			LowResVideoPath:  lowResVideoPath,
 		}
 
-		err := event_persistence.WriteJSONLine(event, *jsonLinesPath)
+		err := event_store.WriteJSONLine(event, *jsonLinesPath)
 		if err != nil {
 			log.Printf("failed to write JSONLine because: %v", err)
 		}

@@ -1,0 +1,172 @@
+package event_store
+
+import (
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"log"
+	"path/filepath"
+	"testing"
+)
+
+func TestMarshalJSONLine(t *testing.T) {
+	event := Event{
+		HighResImagePath: "output/events/image.jpg",
+		LowResImagePath:  "output/events/image-lowres.jpg.",
+		HighResVideoPath: "output/events/video.mkv",
+		LowResVideoPath:  "output/events/video-lowres.mkv",
+	}
+
+	jsonLine, err := MarshalJSONLine(event)
+	if err != nil {
+		log.Fatalf("during test: %v", err)
+	}
+
+	assert.Equal(
+		t,
+		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
+		jsonLine,
+	)
+}
+
+func TestWriteJSONLine(t *testing.T) {
+	event := Event{
+		HighResImagePath: "output/events/image.jpg",
+		LowResImagePath:  "output/events/image-lowres.jpg.",
+		HighResVideoPath: "output/events/video.mkv",
+		LowResVideoPath:  "output/events/video-lowres.mkv",
+	}
+
+	dir, err := ioutil.TempDir("", "watcher_test")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	path := filepath.Join(dir, "some_file.txt")
+
+	for i := 0; i < 2; i++ {
+		err = WriteJSONLine(event, path)
+		if err != nil {
+			log.Fatalf("during test: %v", err)
+		}
+	}
+
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatalf("during test: %v", err)
+	}
+
+	jsonLines := string(b)
+
+	assert.Equal(
+		t,
+		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
+		jsonLines,
+	)
+}
+
+func TestWriteJSONLines(t *testing.T) {
+	events := []Event{
+		{
+			HighResImagePath: "output/events/image.jpg",
+			LowResImagePath:  "output/events/image-lowres.jpg.",
+			HighResVideoPath: "output/events/video.mkv",
+			LowResVideoPath:  "output/events/video-lowres.mkv",
+		},
+		{
+			HighResImagePath: "output/events/image.jpg",
+			LowResImagePath:  "output/events/image-lowres.jpg.",
+			HighResVideoPath: "output/events/video.mkv",
+			LowResVideoPath:  "output/events/video-lowres.mkv",
+		},
+	}
+
+	dir, err := ioutil.TempDir("", "watcher_test")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	path := filepath.Join(dir, "some_file.txt")
+
+	err = WriteJSONLines(events, path)
+	if err != nil {
+		log.Fatalf("during test: %v", err)
+	}
+
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatalf("during test: %v", err)
+	}
+
+	jsonLines := string(b)
+
+	assert.Equal(
+		t,
+		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
+		jsonLines,
+	)
+}
+
+func TestUnmarshalJSONLines(t *testing.T) {
+	events, err := UnmarshalJSONLines("{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n")
+	if err != nil {
+		log.Fatalf("during test: %v", err)
+	}
+
+	assert.Equal(
+		t,
+		[]Event{
+			{
+				HighResImagePath: "output/events/image.jpg",
+				LowResImagePath:  "output/events/image-lowres.jpg.",
+				HighResVideoPath: "output/events/video.mkv",
+				LowResVideoPath:  "output/events/video-lowres.mkv",
+			},
+			{
+				HighResImagePath: "output/events/image.jpg",
+				LowResImagePath:  "output/events/image-lowres.jpg.",
+				HighResVideoPath: "output/events/video.mkv",
+				LowResVideoPath:  "output/events/video-lowres.mkv",
+			},
+		},
+		events,
+	)
+}
+
+func TestReadJSONLines(t *testing.T) {
+	dir, err := ioutil.TempDir("", "watcher_test")
+	if err != nil {
+		log.Fatalf("during test: %v", err)
+	}
+
+	path := filepath.Join(dir, "some_file.txt")
+
+	err = ioutil.WriteFile(
+		path,
+		[]byte("{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n"),
+		0644,
+	)
+	if err != nil {
+		log.Fatalf("during test: %v", err)
+	}
+
+	events, err := ReadJSONLines(path)
+
+	assert.Equal(
+		t,
+		[]Event{
+			{
+				HighResImagePath: "output/events/image.jpg",
+				LowResImagePath:  "output/events/image-lowres.jpg.",
+				HighResVideoPath: "output/events/video.mkv",
+				LowResVideoPath:  "output/events/video-lowres.mkv",
+			},
+			{
+				HighResImagePath: "output/events/image.jpg",
+				LowResImagePath:  "output/events/image-lowres.jpg.",
+				HighResVideoPath: "output/events/video.mkv",
+				LowResVideoPath:  "output/events/video-lowres.mkv",
+			},
+		},
+		events,
+	)
+}
