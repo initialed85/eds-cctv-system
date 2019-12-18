@@ -4,6 +4,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -48,8 +49,12 @@ func (f *FolderWatcher) handle(timestamp time.Time, path string) {
 		return
 	}
 
-	if path != lastPath {
-		log.Printf("calling callback w/ %v", path)
+	pathChanged := path != lastPath
+
+	log.Printf("handled path=%v, suffix=%v, lastPath=%v, pathChanged=%v", path, suffix, lastPath, pathChanged)
+
+	if pathChanged {
+		log.Printf("calling callback w/ %v", lastPath)
 
 		f.callback(timestamp, lastPath)
 	}
@@ -121,13 +126,31 @@ func (f *FolderWatcher) Watch() {
 					break
 				}
 
-				if !strings.HasPrefix(event.Name, "Segment_") && !strings.HasSuffix(event.Name, ".mp4") {
+				if event.Op != fsnotify.Create {
 					continue
 				}
 
-				if strings.Contains(event.Name, "-lowres") {
+				_, fileName := filepath.Split(event.Name)
+
+				if !strings.HasPrefix(fileName, "Segment_") {
+					log.Printf("%v doesn't have Segment_ prefix", fileName)
+
 					continue
 				}
+
+				if !strings.HasSuffix(fileName, ".mp4") {
+					log.Printf("%v doesn't have .mp4 suffix", fileName)
+
+					continue
+				}
+
+				if strings.Contains(fileName, "-lowres") {
+					log.Printf("%v contains -lowres", fileName)
+
+					continue
+				}
+
+				log.Printf("calling handle with path=%v", event.Name)
 
 				f.handle(time.Now(), event.Name)
 			}

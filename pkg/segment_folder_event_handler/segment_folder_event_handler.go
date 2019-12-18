@@ -1,11 +1,11 @@
 package segment_folder_event_handler
 
 import (
+	"fmt"
 	"github.com/initialed85/eds-cctv-system/internal/common"
 	"github.com/initialed85/eds-cctv-system/internal/file_converter"
 	"github.com/initialed85/eds-cctv-system/internal/folder_watcher"
 	"github.com/initialed85/eds-cctv-system/internal/thumbnail_creator"
-	"fmt"
 	"log"
 	"path/filepath"
 	"strings"
@@ -23,10 +23,11 @@ func getImagePath(path string) string {
 }
 
 type SegmentFolderEventHandler struct {
-	folderWatcher folder_watcher.FolderWatcher
+	folderWatcher *folder_watcher.FolderWatcher
+	callback      func(time.Time, string, string, string, string) error
 }
 
-func New(folderPath string) (SegmentFolderEventHandler, error) {
+func New(folderPath string, callback func(time.Time, string, string, string, string) error) (SegmentFolderEventHandler, error) {
 	m := SegmentFolderEventHandler{}
 
 	folderWatcher, err := folder_watcher.New(folderPath, m.folderWatcherCallback)
@@ -34,7 +35,8 @@ func New(folderPath string) (SegmentFolderEventHandler, error) {
 		return SegmentFolderEventHandler{}, err
 	}
 
-	m.folderWatcher = folderWatcher
+	m.folderWatcher = &folderWatcher
+	m.callback = callback
 
 	return m, nil
 }
@@ -55,6 +57,8 @@ func (s *SegmentFolderEventHandler) folderWatcherCallback(timestamp time.Time, h
 	_, stderr, err := file_converter.ConvertVideo(highResVideoPath, lowResVideoPath, 640, 480)
 	if err != nil {
 		log.Printf("failed to convert %v to %v because %v; stderr=%v", highResVideoPath, lowResVideoPath, err, stderr)
+
+		return
 	}
 
 	log.Printf("converted %v to %v", highResVideoPath, lowResVideoPath)
@@ -63,9 +67,20 @@ func (s *SegmentFolderEventHandler) folderWatcherCallback(timestamp time.Time, h
 	_, stderr, err = file_converter.ConvertImage(highResImagePath, lowResImagePath, 640, 480)
 	if err != nil {
 		log.Printf("failed to convert %v to %v because %v; stderr=%v", highResImagePath, lowResImagePath, err, stderr)
+
+		return
 	}
 
 	log.Printf("converted %v to %v", highResImagePath, lowResImagePath)
+
+	err = s.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+	if err != nil {
+		log.Printf("failed to call callback with timestamp=%v, highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v because %v", timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath, err)
+
+		return
+	}
+
+	log.Printf("called callback with highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v", highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 }
 
 func (s *SegmentFolderEventHandler) Start() {
