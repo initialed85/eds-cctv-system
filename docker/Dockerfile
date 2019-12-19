@@ -37,9 +37,17 @@ RUN apt-get update && apt-get install -y \
 
 RUN dpkg-reconfigure -f noninteractive tzdata
 
+# motion web ui
 EXPOSE 8080
+
+# motion streams
 EXPOSE 8081
+
+# event api
 EXPOSE 8082
+
+# segment api
+EXPOSE 8083
 
 COPY --from=motion_build /bin/motion /bin/motion
 COPY --from=motion_build /etc/motion/motion-dist.conf /etc/motion/examples/motion.conf

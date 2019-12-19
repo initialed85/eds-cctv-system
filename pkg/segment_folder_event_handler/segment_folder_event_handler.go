@@ -28,17 +28,17 @@ type SegmentFolderEventHandler struct {
 }
 
 func New(folderPath string, callback func(time.Time, string, string, string, string) error) (SegmentFolderEventHandler, error) {
-	m := SegmentFolderEventHandler{}
+	s := SegmentFolderEventHandler{}
 
-	folderWatcher, err := folder_watcher.New(folderPath, m.folderWatcherCallback)
+	folderWatcher, err := folder_watcher.New(folderPath, s.folderWatcherCallback)
 	if err != nil {
 		return SegmentFolderEventHandler{}, err
 	}
 
-	m.folderWatcher = &folderWatcher
-	m.callback = callback
+	s.folderWatcher = &folderWatcher
+	s.callback = callback
 
-	return m, nil
+	return s, nil
 }
 
 func (s *SegmentFolderEventHandler) folderWatcherCallback(timestamp time.Time, highResVideoPath string) {

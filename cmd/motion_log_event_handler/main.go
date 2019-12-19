@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/initialed85/eds-cctv-system/pkg/event_store"
+	"github.com/initialed85/eds-cctv-system/internal/event_store"
 	"github.com/initialed85/eds-cctv-system/pkg/motion_log_event_handler"
 	"log"
 	"os"

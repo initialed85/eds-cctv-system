@@ -3,7 +3,7 @@
 set -e
 
 go test ./internal/file_watcher
-go test ./internal/event_streamer
+go test ./internal/api
 go test ./internal/thumbnail_creator
 go test ./internal/segment_recorder
 go test ./internal/common
