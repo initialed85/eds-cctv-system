@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/initialed85/eds-cctv-system/pkg/motion_config_segment_recorder"
 	"flag"
+	"github.com/initialed85/eds-cctv-system/pkg/motion_config_segment_recorder"
 	"log"
 	"os"
 	"os/signal"
@@ -34,8 +34,8 @@ func main() {
 		log.Fatal("-destinationPath cannot be empty")
 	}
 
-	if *duration == 0 {
-		log.Fatal("-duration cannot be empty")
+	if *duration <= 0 {
+		log.Fatal("-duration cannot be empty or negative")
 	}
 
 	m, err := motion_config_segment_recorder.New(*configPath, *destinationPath, *duration)

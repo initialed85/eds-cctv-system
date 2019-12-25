@@ -2,13 +2,12 @@ package main
 
 import (
 	"flag"
-	"github.com/initialed85/eds-cctv-system/internal/event_store"
+	"github.com/initialed85/eds-cctv-system/pkg/event_api"
 	"github.com/initialed85/eds-cctv-system/pkg/motion_log_event_handler"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 func waitForCtrlC() {
@@ -24,42 +23,34 @@ func main() {
 
 	filePath := flag.String("filePath", "", "Path to log file for Motion STDOUT and STDERR")
 	jsonLinesPath := flag.String("jsonLinesPath", "", "Path to JSONLines output file")
+	port := flag.Int("port", 0, "Port to listen on")
 
 	flag.Parse()
 
 	if *filePath == "" {
-		log.Fatal("filePath cannot be empty")
+		log.Fatal("-filePath cannot be empty")
 	}
 
 	if *jsonLinesPath == "" {
-		log.Fatal("jsonLinesPath cannot be empty")
+		log.Fatal("-jsonLinesPath cannot be empty")
 	}
 
-	callback := func(timestamp time.Time, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
-		event := event_store.Event{
-			Timestamp:        timestamp,
-			HighResImagePath: highResImagePath,
-			LowResImagePath:  lowResImagePath,
-			HighResVideoPath: highResVideoPath,
-			LowResVideoPath:  lowResVideoPath,
-		}
-
-		err := event_store.WriteJSONLine(event, *jsonLinesPath)
-		if err != nil {
-			log.Printf("failed to write JSONLine because: %v", err)
-		}
-
-		return nil
+	if *port <= 0 {
+		log.Fatal("-port cannot be empty or negative")
 	}
 
 	log.Printf("creating")
 
-	m, err := motion_log_event_handler.New(*filePath, callback)
+	a := event_api.New(*jsonLinesPath, *port)
+
+	m, err := motion_log_event_handler.New(*filePath, a.AddEvent)
 	if err != nil {
 		log.Fatalf("failed to create MotionLogEventHandler because: %v", err)
 	}
 
 	log.Printf("starting")
+
+	a.Start()
 
 	m.Start()
 
@@ -68,6 +59,8 @@ func main() {
 	waitForCtrlC()
 
 	log.Printf("stopping")
+
+	a.Stop()
 
 	err = m.Stop()
 	if err != nil {

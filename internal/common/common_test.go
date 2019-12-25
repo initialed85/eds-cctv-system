@@ -22,25 +22,28 @@ func TestRunCommand(t *testing.T) {
 func TestRunBackgroundProcess(t *testing.T) {
 	before := time.Now()
 
-	process, err := RunBackgroundProcess("sleep", "5")
+	process, err := RunBackgroundProcess("sleep", "1")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	assert.NotNil(t, process)
 
-	processState, err := process.Wait()
-	if err != nil {
-		log.Fatal(err)
-	}
+	assert.NotNil(t, process.Cmd.Process)
 
-	assert.NotNil(t, processState)
+	pid1 := process.Cmd.Process.Pid
+
+	time.Sleep(time.Second * 5)
+
+	pid2 := process.Cmd.Process.Pid
+
+	assert.NotEqual(t, pid1, pid2)
 
 	after := time.Now()
 
 	duration := after.Sub(before)
 
-	assert.Equal(t, true, processState.Exited())
-
 	assert.Greater(t, duration.Seconds(), 5.0)
+
+	process.Stop()
 }

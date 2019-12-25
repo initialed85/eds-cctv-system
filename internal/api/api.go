@@ -26,6 +26,8 @@ func writeError(statusCode int, w http.ResponseWriter, reason string) {
 		log.Fatal(err)
 	}
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	_, err = fmt.Fprintf(w, "%v\n", string(buf))
 	if err != nil {
@@ -63,6 +65,8 @@ func New(port int) *API {
 
 func (a *API) handleStream(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handleStream called")
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	c, err := a.ug.Upgrade(w, r, nil)
 	if err != nil {
@@ -128,6 +132,8 @@ func (a *API) AddHandler(pattern string, handler func(http.ResponseWriter, *http
 
 			return
 		}
+
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		w.WriteHeader(http.StatusOK)
 

@@ -1,7 +1,6 @@
 package segment_recorder
 
 import (
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"log"
 	"testing"
@@ -21,25 +20,14 @@ func TestRecordSegments(t *testing.T) {
 	}
 
 	if err != nil {
-		_ = process.Kill()
+		process.Stop()
 
 		log.Fatal(err)
 	}
 
 	time.Sleep(time.Second * 10)
 
-	_ = process.Kill()
-
-	processState, err := process.Wait()
-	if err != nil {
-		_ = process.Kill()
-
-		log.Fatal(err)
-	}
-
-	assert.Greater(t, processState.Pid(), 0)
-
-	assert.Equal(t, -1, processState.ExitCode())
+	process.Stop()
 
 	// TODO: way more with this test
 }

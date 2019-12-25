@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"sort"
 	"sync"
+	"time"
 )
 
 type Store struct {
@@ -39,7 +40,7 @@ func (s *Store) Read() error {
 	return nil
 }
 
-func (s *Store) Write() {
+func (s *Store) Write() error {
 	events := make([]Event, 0)
 
 	s.mu.Lock()
@@ -47,6 +48,13 @@ func (s *Store) Write() {
 		events = append(events, event)
 	}
 	s.mu.Unlock()
+
+	err := WriteJSONLines(events, s.path)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *Store) Len() int {
@@ -81,6 +89,25 @@ func (s *Store) GetAll() []Event {
 	})
 
 	return events
+}
+
+func (s *Store) GetAllByDate() map[time.Time][]Event {
+	allEvents := s.GetAll()
+
+	eventsByDate := make(map[time.Time][]Event)
+
+	for _, event := range allEvents {
+		date := event.Timestamp.Truncate(time.Hour * 24)
+
+		_, ok := eventsByDate[date]
+		if !ok {
+			eventsByDate[date] = make([]Event, 0)
+		}
+
+		eventsByDate[date] = append(eventsByDate[date], event)
+	}
+
+	return eventsByDate
 }
 
 func (s *Store) Get(eventID uuid.UUID) (Event, error) {

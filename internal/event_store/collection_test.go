@@ -12,8 +12,8 @@ import (
 
 func TestStore(t *testing.T) {
 	time1 := time.Time{}
-	time2 := time1.Add(time.Second)
-	time3 := time2.Add(time.Second)
+	time2 := time1.Add(time.Hour * 24)
+	time3 := time2.Add(time.Hour * 24)
 
 	event1 := NewEvent(time1, "image1-hi", "image1-lo", "video1-hi", "video1-lo")
 	event2 := NewEvent(time2, "image2-hi", "image2-lo", "video2-hi", "video2-lo")
@@ -43,10 +43,20 @@ func TestStore(t *testing.T) {
 		t,
 		[]Event{
 			{EventID: uuid.UUID{0x6, 0xb1, 0xdd, 0x33, 0x71, 0xf3, 0x58, 0x16, 0xb0, 0x92, 0x8b, 0x87, 0x6a, 0xb8, 0xfc, 0xc6}, Timestamp: time1, HighResImagePath: "image1-hi", LowResImagePath: "image1-lo", HighResVideoPath: "video1-hi", LowResVideoPath: "video1-lo"},
-			{EventID: uuid.UUID{0x88, 0x4f, 0x1b, 0xc1, 0x8c, 0x12, 0x5d, 0x77, 0xac, 0xa6, 0x72, 0x8, 0xa, 0x65, 0x96, 0xe2}, Timestamp: time2, HighResImagePath: "image2-hi", LowResImagePath: "image2-lo", HighResVideoPath: "video2-hi", LowResVideoPath: "video2-lo"},
-			{EventID: uuid.UUID{0x13, 0x2, 0xdb, 0x5e, 0xd4, 0xde, 0x5f, 0x73, 0x81, 0x79, 0xec, 0xb8, 0xd2, 0xa3, 0x78, 0x4a}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
+			{EventID: uuid.UUID{0xb8, 0x8, 0x6, 0x48, 0x50, 0xfc, 0x54, 0xb6, 0x83, 0xd6, 0x73, 0x28, 0xb5, 0x13, 0x3c, 0x8f}, Timestamp: time2, HighResImagePath: "image2-hi", LowResImagePath: "image2-lo", HighResVideoPath: "video2-hi", LowResVideoPath: "video2-lo"},
+			{EventID: uuid.UUID{0xa2, 0xea, 0xf2, 0xdf, 0xff, 0x28, 0x58, 0x1b, 0xac, 0xf3, 0x5a, 0x63, 0x8d, 0xec, 0xa7, 0xd}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
 		},
 		collection.GetAll(),
+	)
+
+	assert.Equal(
+		t,
+		map[time.Time][]Event{
+			time1: {{EventID: uuid.UUID{0x6, 0xb1, 0xdd, 0x33, 0x71, 0xf3, 0x58, 0x16, 0xb0, 0x92, 0x8b, 0x87, 0x6a, 0xb8, 0xfc, 0xc6}, Timestamp: time1, HighResImagePath: "image1-hi", LowResImagePath: "image1-lo", HighResVideoPath: "video1-hi", LowResVideoPath: "video1-lo"}},
+			time2: {{EventID: uuid.UUID{0xb8, 0x8, 0x6, 0x48, 0x50, 0xfc, 0x54, 0xb6, 0x83, 0xd6, 0x73, 0x28, 0xb5, 0x13, 0x3c, 0x8f}, Timestamp: time2, HighResImagePath: "image2-hi", LowResImagePath: "image2-lo", HighResVideoPath: "video2-hi", LowResVideoPath: "video2-lo"}},
+			time3: {{EventID: uuid.UUID{0xa2, 0xea, 0xf2, 0xdf, 0xff, 0x28, 0x58, 0x1b, 0xac, 0xf3, 0x5a, 0x63, 0x8d, 0xec, 0xa7, 0xd}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"}},
+		},
+		collection.GetAllByDate(),
 	)
 
 	err = collection.Remove(event2.EventID)
@@ -59,7 +69,7 @@ func TestStore(t *testing.T) {
 		t,
 		[]Event{
 			{EventID: uuid.UUID{0x6, 0xb1, 0xdd, 0x33, 0x71, 0xf3, 0x58, 0x16, 0xb0, 0x92, 0x8b, 0x87, 0x6a, 0xb8, 0xfc, 0xc6}, Timestamp: time1, HighResImagePath: "image1-hi", LowResImagePath: "image1-lo", HighResVideoPath: "video1-hi", LowResVideoPath: "video1-lo"},
-			{EventID: uuid.UUID{0x13, 0x2, 0xdb, 0x5e, 0xd4, 0xde, 0x5f, 0x73, 0x81, 0x79, 0xec, 0xb8, 0xd2, 0xa3, 0x78, 0x4a}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
+			{EventID: uuid.UUID{0xa2, 0xea, 0xf2, 0xdf, 0xff, 0x28, 0x58, 0x1b, 0xac, 0xf3, 0x5a, 0x63, 0x8d, 0xec, 0xa7, 0xd}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
 		},
 		collection.GetAll(),
 	)
@@ -74,7 +84,7 @@ func TestStore(t *testing.T) {
 	assert.Equal(
 		t,
 		[]Event{
-			{EventID: uuid.UUID{0x13, 0x2, 0xdb, 0x5e, 0xd4, 0xde, 0x5f, 0x73, 0x81, 0x79, 0xec, 0xb8, 0xd2, 0xa3, 0x78, 0x4a}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
+			{EventID: uuid.UUID{0xa2, 0xea, 0xf2, 0xdf, 0xff, 0x28, 0x58, 0x1b, 0xac, 0xf3, 0x5a, 0x63, 0x8d, 0xec, 0xa7, 0xd}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
 		},
 		collection.GetAll(),
 	)
@@ -89,7 +99,7 @@ func TestStore(t *testing.T) {
 	assert.Equal(
 		t,
 		[]Event{
-			{EventID: uuid.UUID{0x13, 0x2, 0xdb, 0x5e, 0xd4, 0xde, 0x5f, 0x73, 0x81, 0x79, 0xec, 0xb8, 0xd2, 0xa3, 0x78, 0x4a}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
+			{EventID: uuid.UUID{0xa2, 0xea, 0xf2, 0xdf, 0xff, 0x28, 0x58, 0x1b, 0xac, 0xf3, 0x5a, 0x63, 0x8d, 0xec, 0xa7, 0xd}, Timestamp: time3, HighResImagePath: "image3-hi", LowResImagePath: "image3-lo", HighResVideoPath: "video3-hi", LowResVideoPath: "video3-lo"},
 		},
 		collection.GetAll(),
 	)
