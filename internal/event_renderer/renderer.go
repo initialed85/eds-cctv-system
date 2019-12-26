@@ -2,20 +2,21 @@ package event_renderer
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/initialed85/eds-cctv-system/internal/event_store"
-	"html/template"
+	"text/template"
 	"time"
 )
 
 type EventsSummaryTableRow struct {
+	EventsURL  string
+	EventsDate string
+	EventCount string
 }
 
 func renderEventsSummaryTableRows(eventsByDate map[time.Time][]event_store.Event) (string, error) {
 	b := bytes.Buffer{}
-	for date, event := range eventsByDate {
-		_ = date
-		_ = event
-
+	for date, events := range eventsByDate {
 		t := template.New("EventsSummaryTableRow")
 
 		t, err := t.Parse(EventsSummaryTableRowHTML)
@@ -23,7 +24,11 @@ func renderEventsSummaryTableRows(eventsByDate map[time.Time][]event_store.Event
 			return "", err
 		}
 
-		eventsSummaryTableRow := EventsSummaryTableRow{}
+		eventsSummaryTableRow := EventsSummaryTableRow{
+			EventsURL:  fmt.Sprintf("events_%v.html", date.Format("2006_01_02")),
+			EventsDate: date.Format("2006-01-02"),
+			EventCount: fmt.Sprintf("%v", len(events)),
+		}
 
 		err = t.Execute(&b, eventsSummaryTableRow)
 		if err != nil {
@@ -35,8 +40,8 @@ func renderEventsSummaryTableRows(eventsByDate map[time.Time][]event_store.Event
 }
 
 type EventsSummary struct {
-	StyleSheet string
 	Now        string
+	StyleSheet string
 	TableRows  string
 }
 
@@ -67,4 +72,27 @@ func RenderEventsSummary(eventsByDate map[time.Time][]event_store.Event, now tim
 	}
 
 	return b.String(), nil
+}
+
+type EventsTableRow struct {
+	EventID         string
+	CameraID        string
+	Timestamp       string
+	Size            string
+	Camera          string
+	HighResImageURL string
+	LowResImageURL  string
+	HighResVideoURL string
+	LowResVideoURL  string
+}
+
+type Events struct {
+	EventsDate string
+	Now        string
+	StyleSheet string
+	TableRows  string
+}
+
+func RenderEvents(events []event_store.Event, eventsDate, now time.Time) (string, error) {
+
 }
