@@ -48,22 +48,16 @@ func appendToFile(path, data string) error {
 }
 
 func TestMotionLogEventStreamer(t *testing.T) {
-	var lastTimestamp time.Time
+	var lastCameraName string
 	var lastHighResImagePath string
 	var lastLowResImagePath string
 	var lastHighResVideoPath string
 	var lastLowResVideoPath string
 
-	_ = lastTimestamp
-	_ = lastHighResImagePath
-	_ = lastLowResImagePath
-	_ = lastHighResVideoPath
-	_ = lastLowResVideoPath
-
-	callback := func(timestamp time.Time, highResImagePath string, lowResImagePath string, highResVideoPath string, lowResVideoPath string) error {
+	callback := func(timestamp time.Time, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
 		fmt.Println(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 
-		lastTimestamp = timestamp
+		lastCameraName = cameraName
 		lastHighResImagePath = highResImagePath
 		lastLowResImagePath = lowResImagePath
 		lastHighResVideoPath = highResVideoPath
@@ -87,6 +81,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 	w.Start()
 
 	time.Sleep(time.Second)
+	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
 	assert.Equal(t, "", lastHighResVideoPath)
@@ -98,6 +93,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 	}
 
 	time.Sleep(time.Second)
+	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
 	assert.Equal(t, "", lastHighResVideoPath)
@@ -109,6 +105,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 	}
 
 	time.Sleep(time.Second)
+	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
 	assert.Equal(t, "", lastHighResVideoPath)
@@ -120,6 +117,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 	}
 
 	time.Sleep(time.Second)
+	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
 	assert.Equal(t, "", lastHighResVideoPath)
@@ -131,6 +129,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 	}
 
 	time.Sleep(time.Second)
+	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
 	assert.Equal(t, "", lastHighResVideoPath)
@@ -142,6 +141,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 	}
 
 	time.Sleep(time.Second)
+	assert.Equal(t, "FrontDoor", lastCameraName)
 	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__SideGate.jpg", lastHighResImagePath)
 	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__SideGate-lowres.jpg", lastLowResImagePath)
 	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv", lastHighResVideoPath)

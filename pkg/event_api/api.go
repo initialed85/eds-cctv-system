@@ -70,8 +70,8 @@ func (a *API) handleEventsByDate(w http.ResponseWriter, r *http.Request) {
 	a.handleResponse(a.store.GetAllByDate(), w)
 }
 
-func (a *API) AddEvent(timestamp time.Time, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
-	event := event_store.NewEvent(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+func (a *API) AddEvent(timestamp time.Time, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
+	event := event_store.NewEvent(timestamp, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 
 	a.store.Add(event)
 

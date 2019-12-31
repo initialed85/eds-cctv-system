@@ -10,6 +10,7 @@ import (
 
 func TestMarshalJSONLine(t *testing.T) {
 	event := Event{
+		CameraName:       "camera1",
 		HighResImagePath: "output/events/image.jpg",
 		LowResImagePath:  "output/events/image-lowres.jpg.",
 		HighResVideoPath: "output/events/video.mkv",
@@ -23,13 +24,14 @@ func TestMarshalJSONLine(t *testing.T) {
 
 	assert.Equal(
 		t,
-		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
+		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
 		jsonLine,
 	)
 }
 
 func TestWriteJSONLine(t *testing.T) {
 	event := Event{
+		CameraName:       "camera1",
 		HighResImagePath: "output/events/image.jpg",
 		LowResImagePath:  "output/events/image-lowres.jpg.",
 		HighResVideoPath: "output/events/video.mkv",
@@ -59,7 +61,7 @@ func TestWriteJSONLine(t *testing.T) {
 
 	assert.Equal(
 		t,
-		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
+		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
 		jsonLines,
 	)
 }
@@ -67,12 +69,14 @@ func TestWriteJSONLine(t *testing.T) {
 func TestWriteJSONLines(t *testing.T) {
 	events := []Event{
 		{
+			CameraName:       "camera1",
 			HighResImagePath: "output/events/image.jpg",
 			LowResImagePath:  "output/events/image-lowres.jpg.",
 			HighResVideoPath: "output/events/video.mkv",
 			LowResVideoPath:  "output/events/video-lowres.mkv",
 		},
 		{
+			CameraName:       "camera1",
 			HighResImagePath: "output/events/image.jpg",
 			LowResImagePath:  "output/events/image-lowres.jpg.",
 			HighResVideoPath: "output/events/video.mkv",
@@ -101,13 +105,13 @@ func TestWriteJSONLines(t *testing.T) {
 
 	assert.Equal(
 		t,
-		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
+		"{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n",
 		jsonLines,
 	)
 }
 
 func TestUnmarshalJSONLines(t *testing.T) {
-	events, err := UnmarshalJSONLines("{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n")
+	events, err := UnmarshalJSONLines("{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n")
 	if err != nil {
 		log.Fatalf("during test: %v", err)
 	}
@@ -116,12 +120,14 @@ func TestUnmarshalJSONLines(t *testing.T) {
 		t,
 		[]Event{
 			{
+				CameraName:       "camera1",
 				HighResImagePath: "output/events/image.jpg",
 				LowResImagePath:  "output/events/image-lowres.jpg.",
 				HighResVideoPath: "output/events/video.mkv",
 				LowResVideoPath:  "output/events/video-lowres.mkv",
 			},
 			{
+				CameraName:       "camera1",
 				HighResImagePath: "output/events/image.jpg",
 				LowResImagePath:  "output/events/image-lowres.jpg.",
 				HighResVideoPath: "output/events/video.mkv",
@@ -142,7 +148,7 @@ func TestReadJSONLines(t *testing.T) {
 
 	err = ioutil.WriteFile(
 		path,
-		[]byte("{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"timestamp\":\"0001-01-01T00:00:00Z\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n"),
+		[]byte("{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n{\"event_id\":\"00000000-0000-0000-0000-000000000000\",\"timestamp\":\"0001-01-01T00:00:00Z\",\"camera_name\":\"camera1\",\"high_res_image_path\":\"output/events/image.jpg\",\"low_res_image_path\":\"output/events/image-lowres.jpg.\",\"high_res_video_path\":\"output/events/video.mkv\",\"low_res_video_path\":\"output/events/video-lowres.mkv\"}\n"),
 		0644,
 	)
 	if err != nil {
@@ -155,12 +161,14 @@ func TestReadJSONLines(t *testing.T) {
 		t,
 		[]Event{
 			{
+				CameraName:       "camera1",
 				HighResImagePath: "output/events/image.jpg",
 				LowResImagePath:  "output/events/image-lowres.jpg.",
 				HighResVideoPath: "output/events/video.mkv",
 				LowResVideoPath:  "output/events/video-lowres.mkv",
 			},
 			{
+				CameraName:       "camera1",
 				HighResImagePath: "output/events/image.jpg",
 				LowResImagePath:  "output/events/image-lowres.jpg.",
 				HighResVideoPath: "output/events/video.mkv",

@@ -1,8 +1,8 @@
 package thumbnail_creator
 
 import (
+	"fmt"
 	"github.com/initialed85/eds-cctv-system/internal/common"
-	"log"
 )
 
 func CreateThumbnail(videoPath, imagePath string) error {
@@ -18,8 +18,8 @@ func CreateThumbnail(videoPath, imagePath string) error {
 	)
 
 	if err != nil {
-		log.Fatal(stderr)
+		return fmt.Errorf("%v; stderr=%v", err, stderr)
 	}
 
-	return err
+	return nil
 }

@@ -26,10 +26,10 @@ func (r *RelatedEvent) IsComplete() bool {
 type Handler struct {
 	fileWatcher   *file_diff_file_watcher.Watcher
 	relatedEvents map[uuid.UUID]RelatedEvent
-	callback      func(time.Time, string, string, string, string) error
+	callback      func(time.Time, string, string, string, string, string) error
 }
 
-func New(filePath string, callback func(time.Time, string, string, string, string) error) (Handler, error) {
+func New(filePath string, callback func(time.Time, string, string, string, string, string) error) (Handler, error) {
 	m := Handler{
 		relatedEvents: make(map[uuid.UUID]RelatedEvent),
 	}
@@ -72,6 +72,8 @@ func (h *Handler) fileWatcherCallback(timestamp time.Time, lines []string) {
 		h.relatedEvents[event.EventId] = relatedEvent
 
 		if relatedEvent.IsComplete() {
+			cameraName := relatedEvent.SaveVideo.CameraName
+
 			highResVideoPath := relatedEvent.SaveVideo.FilePath
 			lowResVideoPath := common.GetLowResPath(highResVideoPath)
 			_, stderr, err := file_converter.ConvertVideo(highResVideoPath, lowResVideoPath, 640, 480)
@@ -90,7 +92,7 @@ func (h *Handler) fileWatcherCallback(timestamp time.Time, lines []string) {
 
 			log.Printf("converted %v to %v", highResImagePath, lowResImagePath)
 
-			err = h.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+			err = h.callback(timestamp, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 			if err != nil {
 				log.Printf("failed to call callback with timestamp=%v, highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v because %v", timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath, err)
 

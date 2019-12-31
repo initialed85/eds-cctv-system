@@ -64,7 +64,6 @@ var EventsTableRowHTML = `
 	<tr>
 		<td>{{.EventID}}</td>
 		<td>{{.Timestamp}}</td>
-		<td>{{.Size}}</td>
 		<td>{{.CameraName}}</td>
 		<td style="width: 320px";><a target="_blank" href="{{.HighResImageURL}}"><img src="{{.LowResImageURL}}" width="320" height="180" /></a></td>
 		<td>Download <a href="{{.HighResVideoURL}}">high-res</a> or <a href="{{.LowResVideoURL}}">low-res</a></td>
@@ -88,7 +87,6 @@ var EventsHTML = `</html>
 	<tr>
 		<th>Event ID</th>
 		<th>Timestamp</th>
-		<th>Size</th>
 		<th>Camera</th>
 		<th>Screenshot</th>
 		<th>Download</th>
