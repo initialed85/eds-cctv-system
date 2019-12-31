@@ -16,8 +16,6 @@ func getFolderContents(path string) ([]string, error) {
 	contents := make([]string, 0)
 
 	walkFn := func(path string, info os.FileInfo, err error) error {
-		log.Print(path)
-
 		if info.IsDir() {
 			return nil
 		}
@@ -99,6 +97,8 @@ func TestRenderer(t *testing.T) {
 	assert.Equal(
 		t,
 		[]string{
+			"events.html",
+			"events_0001_01_01.html",
 			"some_file.jsonl",
 		},
 		folderContents,
