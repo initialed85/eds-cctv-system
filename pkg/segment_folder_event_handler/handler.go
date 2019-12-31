@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/initialed85/eds-cctv-system/internal/common"
 	"github.com/initialed85/eds-cctv-system/internal/file_converter"
-	"github.com/initialed85/eds-cctv-system/internal/folder_watcher"
+	"github.com/initialed85/eds-cctv-system/internal/file_write_folder_watcher"
 	"github.com/initialed85/eds-cctv-system/internal/thumbnail_creator"
 	"log"
 	"path/filepath"
@@ -22,17 +22,17 @@ func getImagePath(path string) string {
 	return fmt.Sprintf("%v%v", part, ".jpg")
 }
 
-type SegmentFolderEventHandler struct {
-	folderWatcher *folder_watcher.FolderWatcher
+type Handler struct {
+	folderWatcher *file_write_folder_watcher.Watcher
 	callback      func(time.Time, string, string, string, string) error
 }
 
-func New(folderPath string, callback func(time.Time, string, string, string, string) error) (SegmentFolderEventHandler, error) {
-	s := SegmentFolderEventHandler{}
+func New(folderPath string, callback func(time.Time, string, string, string, string) error) (Handler, error) {
+	s := Handler{}
 
-	folderWatcher, err := folder_watcher.New(folderPath, s.folderWatcherCallback)
+	folderWatcher, err := file_write_folder_watcher.New(folderPath, s.folderWatcherCallback)
 	if err != nil {
-		return SegmentFolderEventHandler{}, err
+		return Handler{}, err
 	}
 
 	s.folderWatcher = &folderWatcher
@@ -41,7 +41,7 @@ func New(folderPath string, callback func(time.Time, string, string, string, str
 	return s, nil
 }
 
-func (s *SegmentFolderEventHandler) folderWatcherCallback(timestamp time.Time, highResVideoPath string) {
+func (h *Handler) folderWatcherCallback(timestamp time.Time, highResVideoPath string) {
 	highResImagePath := getImagePath(highResVideoPath)
 
 	err := thumbnail_creator.CreateThumbnail(highResVideoPath, highResImagePath)
@@ -73,7 +73,7 @@ func (s *SegmentFolderEventHandler) folderWatcherCallback(timestamp time.Time, h
 
 	log.Printf("converted %v to %v", highResImagePath, lowResImagePath)
 
-	err = s.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+	err = h.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 	if err != nil {
 		log.Printf("failed to call callback with timestamp=%v, highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v because %v", timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath, err)
 
@@ -83,14 +83,14 @@ func (s *SegmentFolderEventHandler) folderWatcherCallback(timestamp time.Time, h
 	log.Printf("called callback with highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v", highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 }
 
-func (s *SegmentFolderEventHandler) Start() {
-	go s.folderWatcher.Watch()
+func (h *Handler) Start() {
+	go h.folderWatcher.Watch()
 
 	time.Sleep(time.Second)
 }
 
-func (s *SegmentFolderEventHandler) Stop() error {
-	s.folderWatcher.Stop()
+func (h *Handler) Stop() error {
+	h.folderWatcher.Stop()
 
 	return nil
 }

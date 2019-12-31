@@ -11,7 +11,7 @@ import (
 
 // needs ffmpeg installed
 func TestConvertVideo(t *testing.T) {
-	dir, err := ioutil.TempDir("", "file_converter_test")
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +46,7 @@ func TestConvertVideo(t *testing.T) {
 
 // needs imagemagick installed
 func TestConvertImage(t *testing.T) {
-	dir, err := ioutil.TempDir("", "file_converter_test")
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatal(err)
 	}

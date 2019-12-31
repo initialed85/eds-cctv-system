@@ -25,6 +25,10 @@ func NewStore(path string) Store {
 	return e
 }
 
+func (s *Store) GetPath() string {
+	return s.path
+}
+
 func (s *Store) Read() error {
 	events, err := ReadJSONLines(s.path)
 	if err != nil {
@@ -105,6 +109,12 @@ func (s *Store) GetAllByDate() map[time.Time][]Event {
 		}
 
 		eventsByDate[date] = append(eventsByDate[date], event)
+	}
+
+	for date := range eventsByDate {
+		sort.SliceStable(eventsByDate[date], func(i, j int) bool {
+			return eventsByDate[date][i].Timestamp.Unix() < eventsByDate[date][j].Timestamp.Unix()
+		})
 	}
 
 	return eventsByDate

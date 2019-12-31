@@ -1,4 +1,4 @@
-package file_watcher
+package file_diff_file_watcher
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -39,8 +39,8 @@ func appendToFile(path, data string) error {
 	return writeFileWithFlags(path, data, os.O_APPEND|os.O_CREATE|os.O_WRONLY)
 }
 
-func TestFileWatcher(t *testing.T) {
-	dir, err := ioutil.TempDir("", "file_watcher_test")
+func TestWatcher(t *testing.T) {
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatalf("during test: %v", err)
 	}
@@ -51,6 +51,8 @@ func TestFileWatcher(t *testing.T) {
 
 	callback := func(timestamp time.Time, added []string) {
 		lastAdded = added
+
+		log.Printf("lastAdded = %v", lastAdded)
 	}
 
 	w, err := New(path, callback)
@@ -60,7 +62,7 @@ func TestFileWatcher(t *testing.T) {
 
 	go w.Watch()
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Millisecond * 200)
 	assert.Equal(t, []string{"initial"}, lastAdded) // nothing yet
 
 	err = writeToFile(path, "")
@@ -68,23 +70,23 @@ func TestFileWatcher(t *testing.T) {
 		log.Fatalf("during test: %v", err)
 	}
 
-	time.Sleep(time.Second)
-	assert.Equal(t, []string{""}, lastAdded) // file created
+	time.Sleep(time.Millisecond * 200)
+	assert.Equal(t, []string{}, lastAdded) // file created
 
 	err = appendToFile(path, "The first line\nThe second line\n")
 	if err != nil {
 		log.Fatalf("during test: %v", err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
-	assert.Equal(t, []string{"The first line", "The second line"}, lastAdded) // edit w/ trailing newline
+	time.Sleep(time.Millisecond * 200)
+	assert.Equal(t, []string{"The first line", "The second line", ""}, lastAdded) // edit w/ trailing newline
 
 	err = appendToFile(path, "The first line\nThe second line")
 	if err != nil {
 		log.Fatalf("during test: %v", err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Millisecond * 200)
 	assert.Equal(t, []string{"The first line", "The second line"}, lastAdded) // edit w/o trailing newline
 
 	err = os.Remove(path)
@@ -92,7 +94,7 @@ func TestFileWatcher(t *testing.T) {
 		log.Fatalf("during test: %v", err)
 	}
 
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Millisecond * 200)
 	assert.Equal(t, []string{"The first line", "The second line"}, lastAdded) // no change
 
 	w.Stop()

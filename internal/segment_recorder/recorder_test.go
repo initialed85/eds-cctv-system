@@ -9,7 +9,7 @@ import (
 
 // needs an unauthenticated source at rtsp://192.168.137.31
 func TestRecordSegments(t *testing.T) {
-	dir, err := ioutil.TempDir("", "file_converter_test")
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -45,7 +45,7 @@ func main() {
 
 	m, err := motion_log_event_handler.New(*filePath, a.AddEvent)
 	if err != nil {
-		log.Fatalf("failed to create MotionLogEventHandler because: %v", err)
+		log.Fatalf("failed to create Handler because: %v", err)
 	}
 
 	log.Printf("starting")
@@ -64,7 +64,7 @@ func main() {
 
 	err = m.Stop()
 	if err != nil {
-		log.Fatalf("failed to stop MotionLogEventHandler because: %v", err)
+		log.Fatalf("failed to stop Handler because: %v", err)
 	}
 
 	log.Printf("stopped")

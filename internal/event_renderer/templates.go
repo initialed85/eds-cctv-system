@@ -49,7 +49,7 @@ var EventsSummaryHTML = `</html>
 
 	<tr>
 		<th>Date</th>
-		<th>Events</th>
+		<th>EventsSeed</th>
 	</tr>
 {{.TableRows}}
 </table>
@@ -63,10 +63,9 @@ var EventsSummaryHTML = `</html>
 var EventsTableRowHTML = `
 	<tr>
 		<td>{{.EventID}}</td>
-		<td>{{.CameraID}}</td>
 		<td>{{.Timestamp}}</td>
 		<td>{{.Size}}</td>
-		<td>{{.Camera}}</td>
+		<td>{{.CameraName}}</td>
 		<td style="width: 320px";><a target="_blank" href="{{.HighResImageURL}}"><img src="{{.LowResImageURL}}" width="320" height="180" /></a></td>
 		<td>Download <a href="{{.HighResVideoURL}}">high-res</a> or <a href="{{.LowResVideoURL}}">low-res</a></td>
 	</tr>
@@ -88,7 +87,6 @@ var EventsHTML = `</html>
 
 	<tr>
 		<th>Event ID</th>
-		<th>Camera ID</th>
 		<th>Timestamp</th>
 		<th>Size</th>
 		<th>Camera</th>

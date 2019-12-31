@@ -4,10 +4,12 @@ set -e
 
 go test ./internal/api
 go test ./internal/common
+go test ./internal/event_renderer
 go test ./internal/event_store
 go test ./internal/file_converter
+go test ./internal/file_diff_file_watcher
 go test ./internal/file_watcher
-go test ./internal/folder_watcher
+go test ./internal/file_write_folder_watcher
 go test ./internal/motion_config
 go test ./internal/motion_log
 go test ./internal/segment_recorder

@@ -45,7 +45,7 @@ func main() {
 
 	s, err := segment_folder_event_handler.New(*folderPath, a.AddEvent)
 	if err != nil {
-		log.Fatalf("failed to create SegmentFolderEventHandler because: %v", err)
+		log.Fatalf("failed to create Handler because: %v", err)
 	}
 
 	log.Printf("starting")
@@ -64,7 +64,7 @@ func main() {
 
 	err = s.Stop()
 	if err != nil {
-		log.Fatalf("failed to stop SegmentFolderEventHandler because: %v", err)
+		log.Fatalf("failed to stop Handler because: %v", err)
 	}
 
 	log.Printf("stopped")

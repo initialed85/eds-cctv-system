@@ -36,7 +36,7 @@ func TestWriteJSONLine(t *testing.T) {
 		LowResVideoPath:  "output/events/video-lowres.mkv",
 	}
 
-	dir, err := ioutil.TempDir("", "watcher_test")
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,7 +80,7 @@ func TestWriteJSONLines(t *testing.T) {
 		},
 	}
 
-	dir, err := ioutil.TempDir("", "watcher_test")
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -133,7 +133,7 @@ func TestUnmarshalJSONLines(t *testing.T) {
 }
 
 func TestReadJSONLines(t *testing.T) {
-	dir, err := ioutil.TempDir("", "watcher_test")
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatalf("during test: %v", err)
 	}

@@ -1,4 +1,4 @@
-package folder_watcher
+package file_write_folder_watcher
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -35,12 +35,8 @@ func writeToFile(path, data string) error {
 	return writeFileWithFlags(path, data, os.O_CREATE|os.O_WRONLY)
 }
 
-func appendToFile(path, data string) error {
-	return writeFileWithFlags(path, data, os.O_APPEND|os.O_CREATE|os.O_WRONLY)
-}
-
-func TestFolderWatcher(t *testing.T) {
-	dir, err := ioutil.TempDir("", "folder_watcher_test")
+func TestWatcher(t *testing.T) {
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatal(err)
 	}

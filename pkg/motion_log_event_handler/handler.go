@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/initialed85/eds-cctv-system/internal/common"
 	"github.com/initialed85/eds-cctv-system/internal/file_converter"
-	"github.com/initialed85/eds-cctv-system/internal/file_watcher"
+	"github.com/initialed85/eds-cctv-system/internal/file_diff_file_watcher"
 	"github.com/initialed85/eds-cctv-system/internal/motion_log"
 	"log"
 	"time"
@@ -23,20 +23,20 @@ func (r *RelatedEvent) IsComplete() bool {
 	return r.MotionStart != nil && r.SaveVideo != nil && r.SaveImage != nil && r.MotionStop != nil
 }
 
-type MotionLogEventHandler struct {
-	fileWatcher   *file_watcher.FileWatcher
+type Handler struct {
+	fileWatcher   *file_diff_file_watcher.Watcher
 	relatedEvents map[uuid.UUID]RelatedEvent
 	callback      func(time.Time, string, string, string, string) error
 }
 
-func New(filePath string, callback func(time.Time, string, string, string, string) error) (MotionLogEventHandler, error) {
-	m := MotionLogEventHandler{
+func New(filePath string, callback func(time.Time, string, string, string, string) error) (Handler, error) {
+	m := Handler{
 		relatedEvents: make(map[uuid.UUID]RelatedEvent),
 	}
 
-	fileWatcher, err := file_watcher.New(filePath, m.fileWatcherCallback)
+	fileWatcher, err := file_diff_file_watcher.New(filePath, m.fileWatcherCallback)
 	if err != nil {
-		return MotionLogEventHandler{}, err
+		return Handler{}, err
 	}
 
 	m.fileWatcher = &fileWatcher
@@ -45,7 +45,7 @@ func New(filePath string, callback func(time.Time, string, string, string, strin
 	return m, nil
 }
 
-func (m *MotionLogEventHandler) fileWatcherCallback(timestamp time.Time, lines []string) {
+func (h *Handler) fileWatcherCallback(timestamp time.Time, lines []string) {
 	for _, line := range lines {
 		event, err := motion_log.ParseLine(timestamp, line)
 		if err != nil {
@@ -54,7 +54,7 @@ func (m *MotionLogEventHandler) fileWatcherCallback(timestamp time.Time, lines [
 			continue
 		}
 
-		relatedEvent, ok := m.relatedEvents[event.EventId]
+		relatedEvent, ok := h.relatedEvents[event.EventId]
 		if !ok {
 			relatedEvent = RelatedEvent{}
 		}
@@ -69,7 +69,7 @@ func (m *MotionLogEventHandler) fileWatcherCallback(timestamp time.Time, lines [
 			relatedEvent.MotionStop = &event
 		}
 
-		m.relatedEvents[event.EventId] = relatedEvent
+		h.relatedEvents[event.EventId] = relatedEvent
 
 		if relatedEvent.IsComplete() {
 			highResVideoPath := relatedEvent.SaveVideo.FilePath
@@ -90,26 +90,26 @@ func (m *MotionLogEventHandler) fileWatcherCallback(timestamp time.Time, lines [
 
 			log.Printf("converted %v to %v", highResImagePath, lowResImagePath)
 
-			err = m.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+			err = h.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 			if err != nil {
 				log.Printf("failed to call callback with timestamp=%v, highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v because %v", timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath, err)
 
 				return
 			}
 
-			delete(m.relatedEvents, event.EventId)
+			delete(h.relatedEvents, event.EventId)
 		}
 	}
 }
 
-func (m *MotionLogEventHandler) Start() {
-	go m.fileWatcher.Watch()
+func (h *Handler) Start() {
+	go h.fileWatcher.Watch()
 
 	time.Sleep(time.Second)
 }
 
-func (m *MotionLogEventHandler) Stop() error {
-	m.fileWatcher.Stop()
+func (h *Handler) Stop() error {
+	h.fileWatcher.Stop()
 
 	return nil
 }

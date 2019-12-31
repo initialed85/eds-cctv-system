@@ -8,7 +8,7 @@ import (
 )
 
 func TestCreateThumbnail(t *testing.T) {
-	dir, err := ioutil.TempDir("", "file_watcher_test")
+	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
 		log.Fatal(err)
 	}

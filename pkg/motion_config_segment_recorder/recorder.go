@@ -1,24 +1,24 @@
 package motion_config_segment_recorder
 
 import (
+	"github.com/initialed85/eds-cctv-system/internal/common"
 	"github.com/initialed85/eds-cctv-system/internal/motion_config"
 	"github.com/initialed85/eds-cctv-system/internal/segment_recorder"
 	"log"
-	"os"
 )
 
-type MotionConfigSegmentRecorder struct {
+type Recorder struct {
 	destinationPath string
 	duration        int
 	configs         []motion_config.Config
-	processes       []*os.Process
+	processes       []*common.BackgroundProcess
 	started         bool
 }
 
-func New(configPath, destinationPath string, duration int) (MotionConfigSegmentRecorder, error) {
+func New(configPath, destinationPath string, duration int) (Recorder, error) {
 	configs, err := motion_config.Find(configPath)
 	if err != nil {
-		return MotionConfigSegmentRecorder{}, err
+		return Recorder{}, err
 	}
 
 	baseConfig := configs[len(configs)-1]
@@ -29,48 +29,46 @@ func New(configPath, destinationPath string, duration int) (MotionConfigSegmentR
 		cameraConfigs = append(cameraConfigs, motion_config.MergeConfigs(baseConfig, config))
 	}
 
-	return MotionConfigSegmentRecorder{
+	return Recorder{
 		destinationPath: destinationPath,
 		duration:        duration,
 		configs:         cameraConfigs,
-		processes:       make([]*os.Process, 0),
+		processes:       make([]*common.BackgroundProcess, 0),
 		started:         false,
 	}, nil
 }
 
-func (m *MotionConfigSegmentRecorder) Start() error {
-	if m.started {
+func (r *Recorder) Start() error {
+	if r.started {
 		return nil
 	}
 
-	for _, config := range m.configs {
+	for _, config := range r.configs {
 		log.Printf("starting segment recorder for %+v", config)
 
-		process, err := segment_recorder.RecordSegments(config.NetCamURL, m.destinationPath, config.CameraName, m.duration)
+		process, err := segment_recorder.RecordSegments(config.NetCamURL, r.destinationPath, config.CameraName, r.duration)
 		if err != nil {
 			return err
 		}
 
-		m.processes = append(m.processes, process)
+		r.processes = append(r.processes, process)
 	}
 
-	m.started = true
+	r.started = true
 
 	return nil
 }
 
-func (m *MotionConfigSegmentRecorder) Stop() {
-	if !m.started {
+func (r *Recorder) Stop() {
+	if !r.started {
 		return
 	}
 
-	for _, process := range m.processes {
+	for _, process := range r.processes {
 		log.Printf("starting segment recorder at %+v", process)
 
-		_ = process.Kill()
-
-		_, _ = process.Wait()
+		process.Stop()
 	}
 
-	m.started = false
+	r.started = false
 }
