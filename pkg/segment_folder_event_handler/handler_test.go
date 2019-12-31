@@ -28,22 +28,16 @@ func TestSegmentFolderEventHandler(t *testing.T) {
 		_ = os.Remove("../../test_files/Segment_c_Driveway-lowres.jpg")
 	}()
 
-	var lastTimestamp time.Time
+	var lastCameraName string
 	var lastHighResImagePath string
 	var lastLowResImagePath string
 	var lastHighResVideoPath string
 	var lastLowResVideoPath string
 
-	_ = lastTimestamp
-	_ = lastHighResImagePath
-	_ = lastLowResImagePath
-	_ = lastHighResVideoPath
-	_ = lastLowResVideoPath
-
-	callback := func(timestamp time.Time, highResImagePath string, lowResImagePath string, highResVideoPath string, lowResVideoPath string) error {
+	callback := func(timestamp time.Time, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
 		fmt.Println(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 
-		lastTimestamp = timestamp
+		lastCameraName = cameraName
 		lastHighResImagePath = highResImagePath
 		lastLowResImagePath = lowResImagePath
 		lastHighResVideoPath = highResVideoPath
@@ -60,6 +54,7 @@ func TestSegmentFolderEventHandler(t *testing.T) {
 	s.Start()
 
 	time.Sleep(time.Second)
+	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
 	assert.Equal(t, "", lastHighResVideoPath)
@@ -76,6 +71,7 @@ func TestSegmentFolderEventHandler(t *testing.T) {
 	}
 
 	time.Sleep(time.Second * 5)
+	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
 	assert.Equal(t, "", lastHighResVideoPath)
@@ -87,6 +83,7 @@ func TestSegmentFolderEventHandler(t *testing.T) {
 	}
 
 	time.Sleep(time.Second * 5)
+	assert.Equal(t, "Driveway", lastCameraName)
 	assert.Equal(t, "../../test_files/Segment_a_Driveway.jpg", lastHighResImagePath)
 	assert.Equal(t, "../../test_files/Segment_a_Driveway-lowres.jpg", lastLowResImagePath)
 	assert.Equal(t, "../../test_files/Segment_a_Driveway.mp4", lastHighResVideoPath)
@@ -98,6 +95,7 @@ func TestSegmentFolderEventHandler(t *testing.T) {
 	}
 
 	time.Sleep(time.Second * 5)
+	assert.Equal(t, "Driveway", lastCameraName)
 	assert.Equal(t, "../../test_files/Segment_b_Driveway.jpg", lastHighResImagePath)
 	assert.Equal(t, "../../test_files/Segment_b_Driveway-lowres.jpg", lastLowResImagePath)
 	assert.Equal(t, "../../test_files/Segment_b_Driveway.mp4", lastHighResVideoPath)

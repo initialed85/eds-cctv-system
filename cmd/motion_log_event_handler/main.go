@@ -22,7 +22,7 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
 	filePath := flag.String("filePath", "", "Path to log file for Motion STDOUT and STDERR")
-	jsonLinesPath := flag.String("jsonLinesPath", "", "Path to JSONLines output file")
+	storePath := flag.String("storePath", "", "Path to event store file")
 	port := flag.Int("port", 0, "Port to listen on")
 
 	flag.Parse()
@@ -31,8 +31,8 @@ func main() {
 		log.Fatal("-filePath cannot be empty")
 	}
 
-	if *jsonLinesPath == "" {
-		log.Fatal("-jsonLinesPath cannot be empty")
+	if *storePath == "" {
+		log.Fatal("-storePath cannot be empty")
 	}
 
 	if *port <= 0 {
@@ -41,7 +41,7 @@ func main() {
 
 	log.Printf("creating")
 
-	a := event_api.New(*jsonLinesPath, *port)
+	a := event_api.New(*storePath, *port)
 
 	m, err := motion_log_event_handler.New(*filePath, a.AddEvent)
 	if err != nil {

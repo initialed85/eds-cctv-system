@@ -22,9 +22,10 @@ COPY pkg /srv/pkg
 COPY go.mod /srv/go.mod
 COPY go.sum /srv/go.sum
 
-RUN go build -o motion_config_segment_recorder cmd/motion_config_segment_recorder/main.go
-RUN go build -o motion_log_event_handler cmd/motion_log_event_handler/main.go
-RUN go build -o segment_folder_event_handler cmd/segment_folder_event_handler/main.go
+RUN go build -v -o motion_config_segment_recorder cmd/motion_config_segment_recorder/main.go
+RUN go build -v -o motion_log_event_handler cmd/motion_log_event_handler/main.go
+RUN go build -v -o segment_folder_event_handler cmd/segment_folder_event_handler/main.go
+RUN go build -v -o event_store_updater_event_renderer cmd/event_store_updater_event_renderer/main.go
 
 FROM ubuntu:18.04 AS run
 

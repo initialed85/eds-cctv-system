@@ -22,12 +22,26 @@ func getImagePath(path string) string {
 	return fmt.Sprintf("%v%v", part, ".jpg")
 }
 
-type Handler struct {
-	folderWatcher *file_write_folder_watcher.Watcher
-	callback      func(time.Time, string, string, string, string) error
+func getCameraName(path string) string {
+	_, file := filepath.Split(path)
+
+	extension := filepath.Ext(path)
+
+	parts := strings.Split(file, extension)
+
+	part := strings.Join(parts[0:len(parts)-1], extension)
+
+	parts = strings.Split(part, "_")
+
+	return parts[len(parts)-1]
 }
 
-func New(folderPath string, callback func(time.Time, string, string, string, string) error) (Handler, error) {
+type Handler struct {
+	folderWatcher *file_write_folder_watcher.Watcher
+	callback      func(time.Time, string, string, string, string, string) error
+}
+
+func New(folderPath string, callback func(time.Time, string, string, string, string, string) error) (Handler, error) {
 	s := Handler{}
 
 	folderWatcher, err := file_write_folder_watcher.New(folderPath, s.folderWatcherCallback)
@@ -42,6 +56,8 @@ func New(folderPath string, callback func(time.Time, string, string, string, str
 }
 
 func (h *Handler) folderWatcherCallback(timestamp time.Time, highResVideoPath string) {
+	cameraName := getCameraName(highResVideoPath)
+
 	highResImagePath := getImagePath(highResVideoPath)
 
 	err := thumbnail_creator.CreateThumbnail(highResVideoPath, highResImagePath)
@@ -73,7 +89,7 @@ func (h *Handler) folderWatcherCallback(timestamp time.Time, highResVideoPath st
 
 	log.Printf("converted %v to %v", highResImagePath, lowResImagePath)
 
-	err = h.callback(timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
+	err = h.callback(timestamp, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 	if err != nil {
 		log.Printf("failed to call callback with timestamp=%v, highResImagePath=%v, lowResImagePath=%v, highResVideoPath=%v, lowResVideoPath=%v because %v", timestamp, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath, err)
 

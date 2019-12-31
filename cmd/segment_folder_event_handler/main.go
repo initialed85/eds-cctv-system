@@ -22,7 +22,7 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
 	folderPath := flag.String("folderPath", "", "Path to segment folder")
-	jsonLinesPath := flag.String("jsonLinesPath", "", "Path to JSONLines output file")
+	storePath := flag.String("storePath", "", "Path to event store file")
 	port := flag.Int("port", 0, "Port to listen on")
 
 	flag.Parse()
@@ -31,8 +31,8 @@ func main() {
 		log.Fatal("-folderPath cannot be empty")
 	}
 
-	if *jsonLinesPath == "" {
-		log.Fatal("-jsonLinesPath cannot be empty")
+	if *storePath == "" {
+		log.Fatal("-storePath cannot be empty")
 	}
 
 	if *port <= 0 {
@@ -41,7 +41,7 @@ func main() {
 
 	log.Printf("creating")
 
-	a := event_api.New(*jsonLinesPath, *port)
+	a := event_api.New(*storePath, *port)
 
 	s, err := segment_folder_event_handler.New(*folderPath, a.AddEvent)
 	if err != nil {
