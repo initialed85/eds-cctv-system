@@ -61,6 +61,7 @@ RUN mkdir -p /etc/motion/conf.d
 COPY --from=go_build /srv/motion_config_segment_recorder /usr/local/bin/motion_config_segment_recorder
 COPY --from=go_build /srv/motion_log_event_handler /usr/local/bin/motion_log_event_handler
 COPY --from=go_build /srv/segment_folder_event_handler /usr/local/bin/segment_folder_event_handler
+COPY --from=go_build /srv/event_store_updater_event_renderer /usr/local/bin/event_store_updater_event_renderer
 
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh
