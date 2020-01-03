@@ -40,9 +40,9 @@ func TestRenderer(t *testing.T) {
 	time2 := time1.Add(time.Hour * 24)
 	time3 := time2.Add(time.Hour * 24)
 
-	event1 := event_store.NewEvent(time1, "camera1", "image1-hi", "image1-lo", "video1-hi", "video1-lo")
-	event2 := event_store.NewEvent(time2, "camera2", "image2-hi", "image2-lo", "video2-hi", "video2-lo")
-	event3 := event_store.NewEvent(time3, "camera3", "image3-hi", "image3-lo", "video3-hi", "video3-lo")
+	event1 := event_store.NewEvent(time1, "camera1", "some/path/image1-hi", "some/path/image1-lo", "some/path/video1-hi", "some/path/video1-lo")
+	event2 := event_store.NewEvent(time2, "camera2", "some/path/image2-hi", "some/path/image2-lo", "some/path/video2-hi", "some/path/video2-lo")
+	event3 := event_store.NewEvent(time3, "camera3", "some/path/image3-hi", "some/path/image3-lo", "some/path/video3-hi", "some/path/video3-lo")
 
 	event1.EventID = uuid.UUID{0}
 	event2.EventID = uuid.UUID{1}
@@ -78,6 +78,7 @@ func TestRenderer(t *testing.T) {
 	assert.Equal(
 		t,
 		[]string{
+			"events.html",
 			"some_file.jsonl",
 		},
 		folderContents,

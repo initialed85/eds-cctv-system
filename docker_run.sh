@@ -16,6 +16,7 @@ docker run \
   -p 8081:8081 \
   -p 8082:8082 \
   -p 8083:8083 \
+  -p 8084:8084 \
   -v "$(pwd)"/motion-configs:/etc/motion \
   -v "$(pwd)"/output/events:/srv/target_dir/events \
   -v "$(pwd)"/output/segments:/srv/target_dir/segments \

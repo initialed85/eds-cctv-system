@@ -26,6 +26,7 @@ RUN go build -v -o motion_config_segment_recorder cmd/motion_config_segment_reco
 RUN go build -v -o motion_log_event_handler cmd/motion_log_event_handler/main.go
 RUN go build -v -o segment_folder_event_handler cmd/segment_folder_event_handler/main.go
 RUN go build -v -o event_store_updater_event_renderer cmd/event_store_updater_event_renderer/main.go
+RUN go build -v -o static_file_server cmd/static_file_server/main.go
 
 FROM ubuntu:18.04 AS run
 
@@ -50,6 +51,9 @@ EXPOSE 8082
 # segment api
 EXPOSE 8083
 
+# static file server
+EXPOSE 8084
+
 COPY --from=motion_build /bin/motion /bin/motion
 COPY --from=motion_build /etc/motion/motion-dist.conf /etc/motion/examples/motion.conf
 COPY --from=motion_build /etc/motion/camera1-dist.conf /etc/motion/examples/camera1.conf
@@ -62,6 +66,7 @@ COPY --from=go_build /srv/motion_config_segment_recorder /usr/local/bin/motion_c
 COPY --from=go_build /srv/motion_log_event_handler /usr/local/bin/motion_log_event_handler
 COPY --from=go_build /srv/segment_folder_event_handler /usr/local/bin/segment_folder_event_handler
 COPY --from=go_build /srv/event_store_updater_event_renderer /usr/local/bin/event_store_updater_event_renderer
+COPY --from=go_build /srv/static_file_server /usr/local/bin/static_file_server
 
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh

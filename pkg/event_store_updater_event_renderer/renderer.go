@@ -54,6 +54,33 @@ func writeFile(path, data string) error {
 	return ioutil.WriteFile(path, []byte(data), 0644)
 }
 
+func truncatePath(path string) string {
+	_, file := filepath.Split(path)
+
+	return file
+}
+
+func truncatePaths(events []event_store.Event) []event_store.Event {
+	newEvents := make([]event_store.Event, 0)
+
+	for _, event := range events {
+		newEvents = append(
+			newEvents,
+			event_store.Event{
+				EventID:          event.EventID,
+				Timestamp:        event.Timestamp,
+				CameraName:       event.CameraName,
+				HighResImagePath: truncatePath(event.HighResImagePath),
+				LowResImagePath:  truncatePath(event.LowResImagePath),
+				HighResVideoPath: truncatePath(event.HighResVideoPath),
+				LowResVideoPath:  truncatePath(event.LowResVideoPath),
+			},
+		)
+	}
+
+	return newEvents
+}
+
 type Renderer struct {
 	store      event_store.Store
 	updater    event_store_updater.Updater
@@ -89,7 +116,7 @@ func (r *Renderer) callback(store event_store.Store) {
 	eventsByDate := store.GetAllByDate()
 
 	for eventsDate, events := range eventsByDate {
-		eventsHTML, err := event_renderer.RenderEvents(events, eventsDate, now)
+		eventsHTML, err := event_renderer.RenderEvents(truncatePaths(events), eventsDate, now)
 		if err != nil {
 			log.Printf("failed to call RenderEvents for %v because: %v", eventsDate, err)
 
@@ -136,6 +163,9 @@ func (r *Renderer) callback(store event_store.Store) {
 
 func (r *Renderer) Start() {
 	go r.updater.Watch()
+
+	// run once to pre-populate
+	r.callback(r.store)
 }
 
 func (r *Renderer) Stop() {

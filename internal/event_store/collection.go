@@ -89,7 +89,7 @@ func (s *Store) GetAll() []Event {
 	s.mu.Unlock()
 
 	sort.SliceStable(events, func(i, j int) bool {
-		return events[i].Timestamp.Unix() < events[j].Timestamp.Unix()
+		return events[i].Timestamp.Unix() > events[j].Timestamp.Unix()
 	})
 
 	return events
@@ -113,11 +113,25 @@ func (s *Store) GetAllByDate() map[time.Time][]Event {
 
 	for date := range eventsByDate {
 		sort.SliceStable(eventsByDate[date], func(i, j int) bool {
-			return eventsByDate[date][i].Timestamp.Unix() < eventsByDate[date][j].Timestamp.Unix()
+			return eventsByDate[date][i].Timestamp.Unix() > eventsByDate[date][j].Timestamp.Unix()
 		})
 	}
 
-	return eventsByDate
+	keys := make([]time.Time, 0)
+	for key := range eventsByDate {
+		keys = append(keys, key)
+	}
+
+	sort.SliceStable(keys, func(i, j int) bool {
+		return keys[i].Unix() > keys[j].Unix()
+	})
+
+	sortedEventsByDate := make(map[time.Time][]Event)
+	for _, key := range keys {
+		sortedEventsByDate[key] = eventsByDate[key]
+	}
+
+	return sortedEventsByDate
 }
 
 func (s *Store) Get(eventID uuid.UUID) (Event, error) {
@@ -130,25 +144,4 @@ func (s *Store) Get(eventID uuid.UUID) (Event, error) {
 	}
 
 	return event, nil
-}
-
-func (s *Store) Pop(eventID uuid.UUID) (Event, error) {
-	s.mu.Lock()
-	event, ok := s.events[eventID]
-	if ok {
-		delete(s.events, eventID)
-	}
-	s.mu.Unlock()
-
-	if !ok {
-		return Event{}, fmt.Errorf("event with EventID=%v did not exist", eventID)
-	}
-
-	return event, nil
-}
-
-func (s *Store) Remove(eventID uuid.UUID) error {
-	_, err := s.Pop(eventID)
-
-	return err
 }
