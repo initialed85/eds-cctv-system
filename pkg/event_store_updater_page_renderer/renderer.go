@@ -1,10 +1,10 @@
-package event_store_updater_event_renderer
+package event_store_updater_page_renderer
 
 import (
 	"fmt"
-	"github.com/initialed85/eds-cctv-system/internal/event_renderer"
 	"github.com/initialed85/eds-cctv-system/internal/event_store"
 	"github.com/initialed85/eds-cctv-system/internal/event_store_updater"
+	"github.com/initialed85/eds-cctv-system/internal/page_renderer"
 	"io/ioutil"
 	"log"
 	"os"
@@ -82,15 +82,18 @@ func truncatePaths(events []event_store.Event) []event_store.Event {
 }
 
 type Renderer struct {
-	store      event_store.Store
-	updater    event_store_updater.Updater
-	renderPath string
+	summaryTitle, title string
+	store               event_store.Store
+	updater             event_store_updater.Updater
+	renderPath          string
 }
 
-func New(storePath, renderPath string) (Renderer, error) {
+func New(summaryTitle, title, storePath, renderPath string) (Renderer, error) {
 	r := Renderer{
-		store:      event_store.NewStore(storePath),
-		renderPath: renderPath,
+		summaryTitle: summaryTitle,
+		title:        title,
+		store:        event_store.NewStore(storePath),
+		renderPath:   renderPath,
 	}
 
 	updater, err := event_store_updater.New(r.store, r.callback)
@@ -116,9 +119,9 @@ func (r *Renderer) callback(store event_store.Store) {
 	eventsByDate := store.GetAllByDate()
 
 	for eventsDate, events := range eventsByDate {
-		eventsHTML, err := event_renderer.RenderEvents(truncatePaths(events), eventsDate, now)
+		eventsHTML, err := page_renderer.RenderPage(r.title, truncatePaths(events), eventsDate, now)
 		if err != nil {
-			log.Printf("failed to call RenderEvents for %v because: %v", eventsDate, err)
+			log.Printf("failed to call RenderPage for %v because: %v", eventsDate, err)
 
 			continue
 		}
@@ -141,9 +144,9 @@ func (r *Renderer) callback(store event_store.Store) {
 		}
 	}
 
-	eventsSummaryHTML, err := event_renderer.RenderEventsSummary(eventsByDate, now)
+	eventsSummaryHTML, err := page_renderer.RenderSummary(r.summaryTitle, eventsByDate, now)
 	if err != nil {
-		log.Printf("failed to call RenderEventsSummary because: %v", err)
+		log.Printf("failed to call RenderSummary because: %v", err)
 
 		return
 	}

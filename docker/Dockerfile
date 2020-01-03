@@ -25,7 +25,7 @@ COPY go.sum /srv/go.sum
 RUN go build -v -o motion_config_segment_recorder cmd/motion_config_segment_recorder/main.go
 RUN go build -v -o motion_log_event_handler cmd/motion_log_event_handler/main.go
 RUN go build -v -o segment_folder_event_handler cmd/segment_folder_event_handler/main.go
-RUN go build -v -o event_store_updater_event_renderer cmd/event_store_updater_event_renderer/main.go
+RUN go build -v -o event_store_updater_page_renderer cmd/event_store_updater_page_renderer/main.go
 RUN go build -v -o static_file_server cmd/static_file_server/main.go
 
 FROM ubuntu:18.04 AS run
@@ -65,7 +65,7 @@ RUN mkdir -p /etc/motion/conf.d
 COPY --from=go_build /srv/motion_config_segment_recorder /usr/local/bin/motion_config_segment_recorder
 COPY --from=go_build /srv/motion_log_event_handler /usr/local/bin/motion_log_event_handler
 COPY --from=go_build /srv/segment_folder_event_handler /usr/local/bin/segment_folder_event_handler
-COPY --from=go_build /srv/event_store_updater_event_renderer /usr/local/bin/event_store_updater_event_renderer
+COPY --from=go_build /srv/event_store_updater_page_renderer /usr/local/bin/event_store_updater_page_renderer
 COPY --from=go_build /srv/static_file_server /usr/local/bin/static_file_server
 
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf

@@ -1,4 +1,4 @@
-package event_renderer
+package page_renderer
 
 import (
 	"fmt"
@@ -53,10 +53,10 @@ func getEventStoreAndLastTimeAndNow() (event_store.Store, time.Time, time.Time) 
 	return store, time3, time3.Add(time.Hour * 24)
 }
 
-func TestRenderEventsSummary(t *testing.T) {
+func TestRenderSummary(t *testing.T) {
 	store, _, now := getEventStoreAndLastTimeAndNow()
 
-	data, err := RenderEventsSummary(store.GetAllByDate(), now)
+	data, err := RenderSummary("All events", store.GetAllByDate(), now)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,15 +65,15 @@ func TestRenderEventsSummary(t *testing.T) {
 
 	assert.Equal(
 		t,
-		"</html>\n<head>\n<title>All events as at 0001-01-04 00:00:00 +0000 UTC</title>\n<style type=\"text/css\">\nBODY {\n    font-family: Tahoma;\n    font-size: 8pt;\n    font-weight: none;\n    text-align: center;\n}\n\nTH {\n    font-family: Tahoma;\n    font-size: 8pt;\n    font-weight: bold;\n    text-align: center;\n}\n\nTD {\n    font-family: Tahoma;\n    font-size: 8pt;\n    font-weight: none;\n    text-align: center;\n    border: 1px solid gray; \n}\n</style>\n</head>\n\n<body>\n<h2>All events as at 0001-01-04 00:00:00 +0000 UTC</h2>\n\n<center>\n<table width=\"90%\">\n\n\t<tr>\n\t\t<th>Date</th>\n\t\t<th>EventsSeed</th>\n\t</tr>\n\n\t<tr>\n\t\t<td><a target=\"event\" href=\"events_0001_01_03.html\">0001-01-03</a></td>\n\t\t<td>2</td>\n\t</tr>\n\n\t<tr>\n\t\t<td><a target=\"event\" href=\"events_0001_01_02.html\">0001-01-02</a></td>\n\t\t<td>2</td>\n\t</tr>\n\n\t<tr>\n\t\t<td><a target=\"event\" href=\"events_0001_01_01.html\">0001-01-01</a></td>\n\t\t<td>2</td>\n\t</tr>\n\n</table>\n<center>\n\n</body>\n</html>",
+		"</html>\n<head>\n<title>All events as at 0001-01-04 00:00:00 +0000 UTC</title>\n<style type=\"text/css\">\nBODY {\n    font-family: Tahoma;\n    font-size: 8pt;\n    font-weight: none;\n    text-align: center;\n}\n\nTH {\n    font-family: Tahoma;\n    font-size: 8pt;\n    font-weight: bold;\n    text-align: center;\n}\n\nTD {\n    font-family: Tahoma;\n    font-size: 8pt;\n    font-weight: none;\n    text-align: center;\n    border: 1px solid gray; \n}\n</style>\n</head>\n\n<body>\n<h2>All events as at 0001-01-04 00:00:00 +0000 UTC</h2>\n\n<center>\n<table width=\"90%\">\n\n\t<tr>\n\t\t<th>Date</th>\n\t\t<th>Events</th>\n\t</tr>\n\n\t<tr>\n\t\t<td><a target=\"event\" href=\"events_0001_01_03.html\">0001-01-03</a></td>\n\t\t<td>2</td>\n\t</tr>\n\n\t<tr>\n\t\t<td><a target=\"event\" href=\"events_0001_01_02.html\">0001-01-02</a></td>\n\t\t<td>2</td>\n\t</tr>\n\n\t<tr>\n\t\t<td><a target=\"event\" href=\"events_0001_01_01.html\">0001-01-01</a></td>\n\t\t<td>2</td>\n\t</tr>\n\n</table>\n<center>\n\n</body>\n</html>",
 		data,
 	)
 }
 
-func TestRenderEvents(t *testing.T) {
+func TestRenderPage(t *testing.T) {
 	store, time3, now := getEventStoreAndLastTimeAndNow()
 
-	data, err := RenderEvents(store.GetAllByDate()[time3], time3, now)
+	data, err := RenderPage("Events", store.GetAllByDate()[time3], time3, now)
 	if err != nil {
 		log.Fatal(err)
 	}

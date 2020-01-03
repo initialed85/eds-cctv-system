@@ -1,4 +1,4 @@
-package event_renderer
+package page_renderer
 
 // Common
 
@@ -26,30 +26,30 @@ TD {
 
 // For the summary view
 
-var EventsSummaryTableRowHTML = `
+var SummaryTableRowHTML = `
 	<tr>
 		<td><a target="event" href="{{.EventsURL}}">{{.EventsDate}}</a></td>
 		<td>{{.EventCount}}</td>
 	</tr>
 `
 
-var EventsSummaryHTML = `</html>
+var SummaryHTML = `</html>
 <head>
-<title>All events as at {{.Now}}</title>
+<title>{{.Title}} as at {{.Now}}</title>
 <style type="text/css">
 {{.StyleSheet}}
 </style>
 </head>
 
 <body>
-<h2>All events as at {{.Now}}</h2>
+<h2>{{.Title}} as at {{.Now}}</h2>
 
 <center>
 <table width="90%">
 
 	<tr>
 		<th>Date</th>
-		<th>EventsSeed</th>
+		<th>Events</th>
 	</tr>
 {{.TableRows}}
 </table>
@@ -60,7 +60,7 @@ var EventsSummaryHTML = `</html>
 
 // For the drill-down view
 
-var EventsTableRowHTML = `
+var PageTableRowHTML = `
 	<tr>
 		<td>{{.EventID}}</td>
 		<td>{{.Timestamp}}</td>
@@ -70,16 +70,16 @@ var EventsTableRowHTML = `
 	</tr>
 `
 
-var EventsHTML = `</html>
+var PageHTML = `</html>
 <head>
-<title>Events for {{.EventsDate}} as at {{.Now}}</title>
+<title>{{.Title}} for {{.EventsDate}} as at {{.Now}}</title>
 <style type="text/css">
 {{.StyleSheet}}
 </style>
 </head>
 
 <body>
-<h1>Events for {{.EventsDate}} as at {{.Now}}</h1>
+<h1>{{.Title}} for {{.EventsDate}} as at {{.Now}}</h1>
 
 <center>
 <table width="90%">

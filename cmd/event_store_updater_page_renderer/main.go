@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/initialed85/eds-cctv-system/pkg/event_store_updater_event_renderer"
+	"github.com/initialed85/eds-cctv-system/pkg/event_store_updater_page_renderer"
 	"log"
 	"os"
 	"os/signal"
@@ -20,10 +20,20 @@ func waitForCtrlC() {
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
+	summaryTitle := flag.String("summaryTitle", "", "Title part for summary page")
+	title := flag.String("title", "", "Title part for each event page")
 	storePath := flag.String("storePath", "", "Path to event store file")
 	renderPath := flag.String("renderPath", "", "Path to render folder")
 
 	flag.Parse()
+
+	if *summaryTitle == "" {
+		log.Fatal("-summaryTitle cannot be empty")
+	}
+
+	if *title == "" {
+		log.Fatal("-title cannot be empty")
+	}
 
 	if *storePath == "" {
 		log.Fatal("-storePath cannot be empty")
@@ -35,7 +45,7 @@ func main() {
 
 	log.Printf("creating")
 
-	e, err := event_store_updater_event_renderer.New(*storePath, *renderPath)
+	e, err := event_store_updater_page_renderer.New(*summaryTitle, *title, *storePath, *renderPath)
 	if err != nil {
 		log.Fatalf("failed to create Renderer because: %v", err)
 	}

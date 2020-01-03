@@ -1,4 +1,4 @@
-package event_store_updater_event_renderer
+package event_store_updater_page_renderer
 
 import (
 	"github.com/google/uuid"
@@ -63,7 +63,7 @@ func TestRenderer(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	renderer, err := New(path, dir)
+	renderer, err := New("All events", "Events", path, dir)
 	if err != nil {
 		log.Fatal(err)
 	}

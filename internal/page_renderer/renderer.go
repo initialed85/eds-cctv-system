@@ -1,4 +1,4 @@
-package event_renderer
+package page_renderer
 
 import (
 	"bytes"
@@ -8,23 +8,23 @@ import (
 	"time"
 )
 
-type EventsSummaryTableRowSeed struct {
+type SummaryTableRowSeed struct {
 	EventsURL  string
 	EventsDate string
 	EventCount string
 }
 
-func renderEventsSummaryTableRows(eventsByDate map[time.Time][]event_store.Event) (string, error) {
+func renderSummaryTableRows(eventsByDate map[time.Time][]event_store.Event) (string, error) {
 	b := bytes.Buffer{}
 	for eventsDate, events := range eventsByDate {
-		t := template.New("EventsSummaryTableRowSeed")
+		t := template.New("SummaryTableRowSeed")
 
-		t, err := t.Parse(EventsSummaryTableRowHTML)
+		t, err := t.Parse(SummaryTableRowHTML)
 		if err != nil {
 			return "", err
 		}
 
-		eventsSummaryTableRowSeed := EventsSummaryTableRowSeed{
+		eventsSummaryTableRowSeed := SummaryTableRowSeed{
 			EventsURL:  fmt.Sprintf("events_%v.html", eventsDate.Format("2006_01_02")),
 			EventsDate: eventsDate.Format("2006-01-02"),
 			EventCount: fmt.Sprintf("%v", len(events)),
@@ -39,28 +39,30 @@ func renderEventsSummaryTableRows(eventsByDate map[time.Time][]event_store.Event
 	return b.String(), nil
 }
 
-type EventsSummarySeed struct {
+type SummarySeed struct {
+	Title      string
 	Now        string
 	StyleSheet string
 	TableRows  string
 }
 
-func RenderEventsSummary(eventsByDate map[time.Time][]event_store.Event, now time.Time) (string, error) {
-	t := template.New("EventsSummarySeed")
+func RenderSummary(title string, eventsByDate map[time.Time][]event_store.Event, now time.Time) (string, error) {
+	t := template.New("SummarySeed")
 
-	t, err := t.Parse(EventsSummaryHTML)
+	t, err := t.Parse(SummaryHTML)
 	if err != nil {
 		return "", err
 	}
 
 	b := bytes.Buffer{}
 
-	tableRows, err := renderEventsSummaryTableRows(eventsByDate)
+	tableRows, err := renderSummaryTableRows(eventsByDate)
 	if err != nil {
 		return "", err
 	}
 
-	eventSummary := EventsSummarySeed{
+	eventSummary := SummarySeed{
+		Title:      title,
 		Now:        now.String(),
 		StyleSheet: StyleSheet,
 		TableRows:  tableRows,
@@ -74,7 +76,7 @@ func RenderEventsSummary(eventsByDate map[time.Time][]event_store.Event, now tim
 	return b.String(), nil
 }
 
-type EventsTableRowSeed struct {
+type PageTableRowSeed struct {
 	EventID         string
 	Timestamp       string
 	Size            string
@@ -85,17 +87,17 @@ type EventsTableRowSeed struct {
 	LowResVideoURL  string
 }
 
-func renderEventsTableRows(events []event_store.Event) (string, error) {
+func renderPageTableRows(events []event_store.Event) (string, error) {
 	b := bytes.Buffer{}
 	for _, event := range events {
-		t := template.New("EventsTableRowSeed")
+		t := template.New("PageTableRowSeed")
 
-		t, err := t.Parse(EventsTableRowHTML)
+		t, err := t.Parse(PageTableRowHTML)
 		if err != nil {
 			return "", err
 		}
 
-		eventsTableRowSeed := EventsTableRowSeed{
+		eventsTableRowSeed := PageTableRowSeed{
 			EventID:         event.EventID.String(),
 			Timestamp:       event.Timestamp.String(),
 			Size:            "?",
@@ -115,29 +117,31 @@ func renderEventsTableRows(events []event_store.Event) (string, error) {
 	return b.String(), nil
 }
 
-type EventsSeed struct {
+type PageSeed struct {
+	Title      string
 	EventsDate string
 	Now        string
 	StyleSheet string
 	TableRows  string
 }
 
-func RenderEvents(events []event_store.Event, eventsDate, now time.Time) (string, error) {
-	t := template.New("EventsSeed")
+func RenderPage(title string, events []event_store.Event, eventsDate, now time.Time) (string, error) {
+	t := template.New("PageSeed")
 
-	t, err := t.Parse(EventsHTML)
+	t, err := t.Parse(PageHTML)
 	if err != nil {
 		return "", err
 	}
 
 	b := bytes.Buffer{}
 
-	tableRows, err := renderEventsTableRows(events)
+	tableRows, err := renderPageTableRows(events)
 	if err != nil {
 		return "", err
 	}
 
-	eventsSeed := EventsSeed{
+	eventsSeed := PageSeed{
+		Title:      title,
 		EventsDate: eventsDate.Format("2006-01-02"),
 		Now:        now.String(),
 		StyleSheet: StyleSheet,
