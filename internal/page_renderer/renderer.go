@@ -63,7 +63,7 @@ func RenderSummary(title string, eventsByDate map[time.Time][]event_store.Event,
 
 	eventSummary := SummarySeed{
 		Title:      title,
-		Now:        now.String(),
+		Now:        now.Format("2006-01-02 15:04:05"),
 		StyleSheet: StyleSheet,
 		TableRows:  tableRows,
 	}
@@ -99,7 +99,7 @@ func renderPageTableRows(events []event_store.Event) (string, error) {
 
 		eventsTableRowSeed := PageTableRowSeed{
 			EventID:         event.EventID.String(),
-			Timestamp:       event.Timestamp.String(),
+			Timestamp:       event.Timestamp.Format("2006-01-02 15:04:05"),
 			Size:            "?",
 			CameraName:      event.CameraName,
 			HighResImageURL: event.HighResImagePath,
@@ -143,7 +143,7 @@ func RenderPage(title string, events []event_store.Event, eventsDate, now time.T
 	eventsSeed := PageSeed{
 		Title:      title,
 		EventsDate: eventsDate.Format("2006-01-02"),
-		Now:        now.String(),
+		Now:        now.Format("2006-01-02 15:04:05"),
 		StyleSheet: StyleSheet,
 		TableRows:  tableRows,
 	}
