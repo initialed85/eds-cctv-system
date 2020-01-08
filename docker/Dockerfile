@@ -35,9 +35,12 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
     tzdata supervisor libjpeg8-dev libmicrohttpd-dev libavformat-dev libavcodec-dev libavutil-dev \
-    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick
+    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick nginx logrotate
 
 RUN dpkg-reconfigure -f noninteractive tzdata
+
+# router
+EXPOSE 80
 
 # motion web ui
 EXPOSE 8080
@@ -68,6 +71,7 @@ COPY --from=go_build /srv/segment_folder_event_handler /usr/local/bin/segment_fo
 COPY --from=go_build /srv/event_store_updater_page_renderer /usr/local/bin/event_store_updater_page_renderer
 COPY --from=go_build /srv/static_file_server /usr/local/bin/static_file_server
 
+COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh
 
