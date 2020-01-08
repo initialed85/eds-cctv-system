@@ -12,7 +12,7 @@ docker run \
   -d \
   --restart=always \
   --name "${CONTAINER_NAME}" \
-  -p 80:80 \
+  -p 81:80 \
   -p 8080:8080 \
   -p 8081:8081 \
   -p 8082:8082 \
