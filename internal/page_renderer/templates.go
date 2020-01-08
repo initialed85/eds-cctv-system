@@ -66,7 +66,7 @@ var PageTableRowHTML = `
 		<td>{{.Timestamp}}</td>
 		<td>{{.CameraName}}</td>
 		<td style="width: 320px";><a target="_blank" href="{{.HighResImageURL}}"><img src="{{.LowResImageURL}}" width="320" height="180" /></a></td>
-		<td>Download <a href="{{.HighResVideoURL}}">high-res</a> or <a href="{{.LowResVideoURL}}">low-res</a></td>
+		<td>Download <a target="_blank" href="{{.HighResVideoURL}}">high-res</a> or <a target="_blank" href="{{.LowResVideoURL}}">low-res</a></td>
 	</tr>
 `
 
