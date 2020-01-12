@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-// ffmpeg -y -i input.mp4 -s 640x480 output.mp4
+// ffmpeg -y -i input.mp4 -s 640x360 output.mp4
 func ConvertVideo(sourcePath, destinationPath string, width, height int) (string, string, error) {
 	log.Printf("converting video %v to %vx%v at %v", sourcePath, width, height, destinationPath)
 

@@ -76,7 +76,7 @@ func (h *Handler) fileWatcherCallback(timestamp time.Time, lines []string) {
 
 			highResVideoPath := relatedEvent.SaveVideo.FilePath
 			lowResVideoPath := common.GetLowResPath(highResVideoPath)
-			_, stderr, err := file_converter.ConvertVideo(highResVideoPath, lowResVideoPath, 640, 480)
+			_, stderr, err := file_converter.ConvertVideo(highResVideoPath, lowResVideoPath, 640, 360)
 			if err != nil {
 				log.Printf("failed to convert %v to %v because %v; stderr=%v", highResVideoPath, lowResVideoPath, err, stderr)
 			}
@@ -85,7 +85,7 @@ func (h *Handler) fileWatcherCallback(timestamp time.Time, lines []string) {
 
 			highResImagePath := relatedEvent.SaveImage.FilePath
 			lowResImagePath := common.GetLowResPath(highResImagePath)
-			_, stderr, err = file_converter.ConvertImage(highResImagePath, lowResImagePath, 640, 480)
+			_, stderr, err = file_converter.ConvertImage(highResImagePath, lowResImagePath, 640, 360)
 			if err != nil {
 				log.Printf("failed to convert %v to %v because %v; stderr=%v", highResImagePath, lowResImagePath, err, stderr)
 			}
