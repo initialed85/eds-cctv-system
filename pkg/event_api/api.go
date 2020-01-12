@@ -29,6 +29,8 @@ func New(path string, port int) *API {
 	a.api.AddHandler("/events", a.handleEvents)
 	a.api.AddHandler("/events_by_date", a.handleEventsByDate)
 
+	a.updateStore()
+
 	return &a
 }
 

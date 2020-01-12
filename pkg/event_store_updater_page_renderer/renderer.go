@@ -96,6 +96,11 @@ func New(summaryTitle, title, storePath, renderPath string) (Renderer, error) {
 		renderPath:   renderPath,
 	}
 
+	err := r.store.Read()
+	if err != nil {
+		return Renderer{}, err
+	}
+
 	updater, err := event_store_updater.New(r.store, r.callback)
 	if err != nil {
 		return Renderer{}, err
