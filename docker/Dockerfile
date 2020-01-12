@@ -71,7 +71,7 @@ COPY --from=go_build /srv/motion_log_event_handler /usr/local/bin/motion_log_eve
 COPY --from=go_build /srv/segment_folder_event_handler /usr/local/bin/segment_folder_event_handler
 COPY --from=go_build /srv/event_store_updater_page_renderer /usr/local/bin/event_store_updater_page_renderer
 COPY --from=go_build /srv/static_file_server /usr/local/bin/static_file_server
-COPY --from=go_build /srv/deduplicator /usr/local/bin/deduplicator
+COPY --from=go_build /srv/event_store_deduplicator /usr/local/bin/event_store_deduplicator
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
