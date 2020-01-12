@@ -29,6 +29,8 @@ func (s *Store) GetPath() string {
 }
 
 func (s *Store) Read() error {
+	log.Printf("reading from %v", s.path)
+
 	events, err := ReadJSONLines(s.path)
 	if err != nil {
 		return err
@@ -48,7 +50,7 @@ func (s *Store) Read() error {
 }
 
 func (s *Store) Write() error {
-	events := s.GetAll()
+	events := s.getAll()
 
 	log.Printf("writing %v events to %v", len(events), s.path)
 
@@ -56,7 +58,7 @@ func (s *Store) Write() error {
 }
 
 func (s *Store) Append() error {
-	events := s.GetAll()
+	events := s.getAll()
 
 	log.Printf("appending %v events to %v", len(events), s.path)
 
@@ -79,7 +81,7 @@ func (s *Store) Add(event Event) {
 	s.mu.Unlock()
 }
 
-func (s *Store) GetAll() []Event {
+func (s *Store) getAll() []Event {
 	if s.Len() == 0 {
 		return []Event{}
 	}
@@ -91,6 +93,12 @@ func (s *Store) GetAll() []Event {
 		events = append(events, event)
 	}
 	s.mu.Unlock()
+
+	return events
+}
+
+func (s *Store) GetAll() []Event {
+	events := s.getAll()
 
 	sort.SliceStable(events, func(i, j int) bool {
 		return events[i].Timestamp.Unix() > events[j].Timestamp.Unix()
