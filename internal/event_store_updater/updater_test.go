@@ -52,7 +52,7 @@ func TestUpdater(t *testing.T) {
 
 	updated = false
 	store.Add(event1)
-	err = store.Write()
+	err = store.Append()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func TestUpdater(t *testing.T) {
 	updated = false
 	store.Add(event2)
 	store.Add(event3)
-	err = store.Write()
+	err = store.Append()
 	if err != nil {
 		log.Fatal(err)
 	}

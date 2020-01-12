@@ -23,8 +23,8 @@ func MarshalJSONLine(event Event) (string, error) {
 	return fmt.Sprintf("%v\n", data[1:len(data)-1]), nil
 }
 
-func writeFile(data, path string) error {
-	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func baseWriteFile(data, path string, flag int) error {
+	f, err := os.OpenFile(path, flag, 0644)
 	if err != nil {
 		return err
 	}
@@ -41,28 +41,45 @@ func writeFile(data, path string) error {
 	return nil
 }
 
-func WriteJSONLine(event Event, path string) error {
-	data, err := MarshalJSONLine(event)
-	if err != nil {
-		return err
-	}
-
-	return writeFile(data, path)
+func writeFile(data, path string) error {
+	return baseWriteFile(data, path, os.O_TRUNC|os.O_CREATE|os.O_WRONLY)
 }
 
-func WriteJSONLines(events []Event, path string) error {
+func appendFile(data, path string) error {
+	return baseWriteFile(data, path, os.O_APPEND|os.O_CREATE|os.O_WRONLY)
+}
+
+func buildJSONLines(events []Event) (string, error) {
 	output := ""
 
 	for _, event := range events {
 		data, err := MarshalJSONLine(event)
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		output += data
 	}
 
+	return output, nil
+}
+
+func WriteJSONLines(events []Event, path string) error {
+	output, err := buildJSONLines(events)
+	if err != nil {
+		return err
+	}
+
 	return writeFile(output, path)
+}
+
+func AppendJSONLines(events []Event, path string) error {
+	output, err := buildJSONLines(events)
+	if err != nil {
+		return err
+	}
+
+	return appendFile(output, path)
 }
 
 func UnmarshalJSONLines(data string) ([]Event, error) {

@@ -3,6 +3,7 @@ package event_store
 import (
 	"fmt"
 	"github.com/google/uuid"
+	"log"
 	"sort"
 	"sync"
 	"time"
@@ -20,8 +21,6 @@ func NewStore(path string) Store {
 		events: make(map[uuid.UUID]Event),
 	}
 
-	_ = e.Read()
-
 	return e
 }
 
@@ -35,30 +34,33 @@ func (s *Store) Read() error {
 		return err
 	}
 
+	log.Printf("read %v JSON Lines from %v", len(events), s.path)
+
 	s.mu.Lock()
 	for _, event := range events {
 		s.events[event.EventID] = event
 	}
 	s.mu.Unlock()
 
+	log.Printf("read %v unique events from JSON Lines", s.Len())
+
 	return nil
 }
 
 func (s *Store) Write() error {
-	events := make([]Event, 0)
+	events := s.GetAll()
 
-	s.mu.Lock()
-	for _, event := range s.events {
-		events = append(events, event)
-	}
-	s.mu.Unlock()
+	log.Printf("writing %v events to %v", len(events), s.path)
 
-	err := WriteJSONLines(events, s.path)
-	if err != nil {
-		return err
-	}
+	return WriteJSONLines(events, s.path)
+}
 
-	return nil
+func (s *Store) Append() error {
+	events := s.GetAll()
+
+	log.Printf("appending %v events to %v", len(events), s.path)
+
+	return AppendJSONLines(events, s.path)
 }
 
 func (s *Store) Len() int {
@@ -70,6 +72,8 @@ func (s *Store) Len() int {
 }
 
 func (s *Store) Add(event Event) {
+	log.Printf("adding/overwriting %+v", event)
+
 	s.mu.Lock()
 	s.events[event.EventID] = event
 	s.mu.Unlock()
@@ -91,6 +95,8 @@ func (s *Store) GetAll() []Event {
 	sort.SliceStable(events, func(i, j int) bool {
 		return events[i].Timestamp.Unix() > events[j].Timestamp.Unix()
 	})
+
+	log.Printf("got %v events", len(events))
 
 	return events
 }
@@ -131,6 +137,8 @@ func (s *Store) GetAllByDate() map[time.Time][]Event {
 		sortedEventsByDate[key] = eventsByDate[key]
 	}
 
+	log.Printf("got %v events across %v dates", len(allEvents), len(sortedEventsByDate))
+
 	return sortedEventsByDate
 }
 
@@ -142,6 +150,8 @@ func (s *Store) Get(eventID uuid.UUID) (Event, error) {
 	if !ok {
 		return Event{}, fmt.Errorf("event with EventID=%v did not exist", eventID)
 	}
+
+	log.Printf("got %+v", event)
 
 	return event, nil
 }

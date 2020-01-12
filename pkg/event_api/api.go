@@ -15,14 +15,15 @@ type errorResponse struct {
 }
 
 type API struct {
-	store event_store.Store
-	api   *api.API
+	readStore, writeStore event_store.Store
+	api                   *api.API
 }
 
 func New(path string, port int) *API {
 	a := API{
-		store: event_store.NewStore(path),
-		api:   api.New(port),
+		readStore:  event_store.NewStore(path),
+		writeStore: event_store.NewStore(path),
+		api:        api.New(port),
 	}
 
 	a.api.AddHandler("/events", a.handleEvents)
@@ -32,9 +33,9 @@ func New(path string, port int) *API {
 }
 
 func (a *API) updateStore() {
-	err := a.store.Read()
+	err := a.readStore.Read()
 	if err != nil {
-		log.Printf("failed to update store because: %v", err)
+		log.Printf("failed to update readStore because: %v", err)
 	}
 }
 
@@ -61,21 +62,21 @@ func (a *API) handleResponse(v interface{}, w http.ResponseWriter) {
 func (a *API) handleEvents(w http.ResponseWriter, r *http.Request) {
 	a.updateStore()
 
-	a.handleResponse(a.store.GetAll(), w)
+	a.handleResponse(a.readStore.GetAll(), w)
 }
 
 func (a *API) handleEventsByDate(w http.ResponseWriter, r *http.Request) {
 	a.updateStore()
 
-	a.handleResponse(a.store.GetAllByDate(), w)
+	a.handleResponse(a.readStore.GetAllByDate(), w)
 }
 
 func (a *API) AddEvent(timestamp time.Time, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {
 	event := event_store.NewEvent(timestamp, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath)
 
-	a.store.Add(event)
+	a.writeStore.Add(event)
 
-	err := a.store.Write()
+	err := a.writeStore.Append()
 	if err != nil {
 		return fmt.Errorf("failed to write %+v because %v", event, err)
 	}

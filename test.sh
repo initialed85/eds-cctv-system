@@ -22,3 +22,4 @@ go test ./pkg/event_store_updater_page_renderer
 go test ./pkg/motion_config_segment_recorder
 go test ./pkg/motion_log_event_handler
 go test ./pkg/segment_folder_event_handler
+go test ./pkg/event_store_deduplicator

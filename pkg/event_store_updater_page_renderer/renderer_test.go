@@ -58,7 +58,7 @@ func TestRenderer(t *testing.T) {
 	path := filepath.Join(dir, "some_file.jsonl")
 
 	store := event_store.NewStore(path)
-	err = store.Write()
+	err = store.Append()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,7 +85,7 @@ func TestRenderer(t *testing.T) {
 	)
 
 	store.Add(event1)
-	err = store.Write()
+	err = store.Append()
 	if err != nil {
 		log.Fatal(err)
 	}
