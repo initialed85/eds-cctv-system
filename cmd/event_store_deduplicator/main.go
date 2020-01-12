@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
+
 	path := flag.String("path", "", "Path to serve")
 
 	flag.Parse()
