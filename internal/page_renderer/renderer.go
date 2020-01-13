@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/initialed85/eds-cctv-system/internal/event_store"
+	"sort"
 	"text/template"
 	"time"
 )
@@ -15,8 +16,19 @@ type SummaryTableRowSeed struct {
 }
 
 func renderSummaryTableRows(eventsByDate map[time.Time][]event_store.Event) (string, error) {
+	keys := make([]time.Time, 0)
+	for key := range eventsByDate {
+		keys = append(keys, key)
+	}
+
+	sort.SliceStable(keys, func(i, j int) bool {
+		return keys[i].Unix() > keys[j].Unix()
+	})
+
 	b := bytes.Buffer{}
-	for eventsDate, events := range eventsByDate {
+	for _, eventsDate := range keys {
+		events := eventsByDate[eventsDate]
+
 		t := template.New("SummaryTableRowSeed")
 
 		t, err := t.Parse(SummaryTableRowHTML)
