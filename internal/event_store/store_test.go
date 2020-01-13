@@ -33,9 +33,12 @@ func TestStore(t *testing.T) {
 	assert.Equal(t, []Event{}, store.GetAll())
 
 	store.Add(event1)
+	store.Add(event1)
+	store.Add(event2)
 	store.Add(event2)
 	store.Add(event3)
 	store.Add(event3)
+	store.Add(event4)
 	store.Add(event4)
 
 	assert.Equal(t, 3, store.Len())
