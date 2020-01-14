@@ -13,11 +13,11 @@ docker run \
   --restart=always \
   --name "${CONTAINER_NAME}" \
   -p 81:80 \
-  -p 8080:8080 \
-  -p 8081:8081 \
-  -p 8082:8082 \
-  -p 8083:8083 \
-  -p 8084:8084 \
+  -p 9080:8080 \
+  -p 9081:8081 \
+  -p 9082:8082 \
+  -p 9083:8083 \
+  -p 9084:8084 \
   -v "$(pwd)"/motion-configs:/etc/motion \
   -v /media/storage/Cameras/events:/srv/target_dir/events \
   -v /media/storage/Cameras/segments:/srv/target_dir/segments \
