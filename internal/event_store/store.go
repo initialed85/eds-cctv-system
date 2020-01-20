@@ -115,7 +115,9 @@ func (s *Store) GetAllByDate() map[time.Time][]Event {
 	eventsByDate := make(map[time.Time][]Event)
 
 	for _, event := range allEvents {
-		date := event.Timestamp.Truncate(time.Hour * 24)
+		// date := event.Timestamp.Truncate(time.Hour * 24)
+
+		date, _ := time.Parse("2006-01-02", event.Timestamp.Format("2006-01-02"))
 
 		_, ok := eventsByDate[date]
 		if !ok {
