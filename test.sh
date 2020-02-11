@@ -2,6 +2,9 @@
 
 set -e
 
+unset GOPATH
+unset GOROOT
+
 go test ./internal/api
 go test ./internal/common
 go test ./internal/duration_finder
