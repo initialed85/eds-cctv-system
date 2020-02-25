@@ -16,3 +16,4 @@ go build -v -o bin/segment_folder_event_handler cmd/segment_folder_event_handler
 go build -v -o bin/event_store_updater_page_renderer cmd/event_store_updater_page_renderer/main.go
 go build -v -o bin/static_file_server cmd/static_file_server/main.go
 go build -v -o bin/event_store_deduplicator cmd/event_store_deduplicator/main.go
+go build -v -o bin/event_store_chat_bot cmd/event_store_chat_bot/main.go
