@@ -29,7 +29,7 @@ func TestConvertVideo(t *testing.T) {
 		"../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv",
 		path,
 		640,
-		480,
+		360,
 	)
 	if err != nil {
 		log.Fatalf("during test: %v; stderr= %v", err, stderr)
@@ -64,7 +64,7 @@ func TestConvertImage(t *testing.T) {
 		"../../test_files/34__103__2019-12-15_13-38-31__SideGate.jpg",
 		path,
 		640,
-		480,
+		360,
 	)
 	if err != nil {
 		log.Fatalf("during test: %v; stderr= %v", err, stderr)

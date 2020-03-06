@@ -70,7 +70,7 @@ func (h *Handler) folderWatcherCallback(timestamp time.Time, highResVideoPath st
 	log.Printf("created thumbnail for %v at %v", highResVideoPath, highResImagePath)
 
 	lowResVideoPath := common.GetLowResPath(highResVideoPath)
-	_, stderr, err := file_converter.ConvertVideo(highResVideoPath, lowResVideoPath, 640, 480)
+	_, stderr, err := file_converter.ConvertVideo(highResVideoPath, lowResVideoPath, 640, 360)
 	if err != nil {
 		log.Printf("failed to convert %v to %v because %v; stderr=%v", highResVideoPath, lowResVideoPath, err, stderr)
 
@@ -80,7 +80,7 @@ func (h *Handler) folderWatcherCallback(timestamp time.Time, highResVideoPath st
 	log.Printf("converted %v to %v", highResVideoPath, lowResVideoPath)
 
 	lowResImagePath := common.GetLowResPath(highResImagePath)
-	_, stderr, err = file_converter.ConvertImage(highResImagePath, lowResImagePath, 640, 480)
+	_, stderr, err = file_converter.ConvertImage(highResImagePath, lowResImagePath, 640, 360)
 	if err != nil {
 		log.Printf("failed to convert %v to %v because %v; stderr=%v", highResImagePath, lowResImagePath, err, stderr)
 
