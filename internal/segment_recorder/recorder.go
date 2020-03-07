@@ -39,6 +39,8 @@ func RecordSegments(netCamURL, destinationPath, cameraName string, duration int)
 		"0",
 		"-muxpreload",
 		"0",
+		"-reset_timestamps",
+		" 1",
 		filepath.Join(destinationPath, "Segment_%Y-%m-%d_%H-%M-%S_"+cameraName+".mp4"),
 	)
 }
