@@ -15,7 +15,7 @@ func TestCreateThumbnail(t *testing.T) {
 
 	path := filepath.Join(dir, "some_file.jpg")
 
-	err = CreateThumbnail("../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv", path)
+	err = CreateThumbnail("../../test_files/34__103__2019-12-15_13-38-29__FrontDoor.mkv", path)
 	if err != nil {
 		log.Fatal(err)
 	}

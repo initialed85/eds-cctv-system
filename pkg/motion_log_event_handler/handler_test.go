@@ -12,9 +12,9 @@ import (
 )
 
 var lines = []string{
-	"[2:ml2:FrontDoor] [NTC] [EVT] event_newfile: File of type 8 saved to: ../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv",
+	"[2:ml2:FrontDoor] [NTC] [EVT] event_newfile: File of type 8 saved to: ../../test_files/34__103__2019-12-15_13-38-29__FrontDoor.mkv",
 	"[2:ml2:FrontDoor] [NTC] [ALL] motion_detected: Motion detected - starting event 34",
-	"[2:ml2:FrontDoor] [NTC] [EVT] event_newfile: File of type 1 saved to: ../../test_files/34__103__2019-12-15_13-38-31__SideGate.jpg",
+	"[2:ml2:FrontDoor] [NTC] [EVT] event_newfile: File of type 1 saved to: ../../test_files/34__103__2019-12-15_13-38-31__FrontDoor.jpg",
 	"[2:ml2:FrontDoor] [NTC] [ALL] mlp_actions: End of event 34",
 }
 
@@ -140,18 +140,18 @@ func TestMotionLogEventStreamer(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 2)
 	assert.Equal(t, "FrontDoor", lastCameraName)
-	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__SideGate.jpg", lastHighResImagePath)
-	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__SideGate-lowres.jpg", lastLowResImagePath)
-	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv", lastHighResVideoPath)
-	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-29__SideGate-lowres.mkv", lastLowResVideoPath)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__FrontDoor.jpg", lastHighResImagePath)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__FrontDoor-lowres.jpg", lastLowResImagePath)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-29__FrontDoor.mkv", lastHighResVideoPath)
+	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-29__FrontDoor-lowres.mkv", lastLowResVideoPath)
 
 	err = w.Stop()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_ = os.Remove("../../test_files/34__103__2019-12-15_13-38-29__SideGate-lowres.mkv")
-	_ = os.Remove("../../test_files/34__103__2019-12-15_13-38-31__SideGate-lowres.jpg")
+	_ = os.Remove("../../test_files/34__103__2019-12-15_13-38-29__FrontDoor-lowres.mkv")
+	_ = os.Remove("../../test_files/34__103__2019-12-15_13-38-31__FrontDoor-lowres.jpg")
 }

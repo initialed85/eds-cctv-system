@@ -26,7 +26,7 @@ func TestConvertVideo(t *testing.T) {
 	}()
 
 	stdout, stderr, err := ConvertVideo(
-		"../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv",
+		"../../test_files/34__103__2019-12-15_13-38-29__FrontDoor.mkv",
 		path,
 		640,
 		360,
@@ -61,7 +61,7 @@ func TestConvertImage(t *testing.T) {
 	}()
 
 	stdout, stderr, err := ConvertImage(
-		"../../test_files/34__103__2019-12-15_13-38-31__SideGate.jpg",
+		"../../test_files/34__103__2019-12-15_13-38-31__FrontDoor.jpg",
 		path,
 		640,
 		360,

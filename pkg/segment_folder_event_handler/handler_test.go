@@ -60,7 +60,7 @@ func TestSegmentFolderEventHandler(t *testing.T) {
 	assert.Equal(t, "", lastHighResVideoPath)
 	assert.Equal(t, "", lastLowResVideoPath)
 
-	from, err := ioutil.ReadFile("../../test_files/34__103__2019-12-15_13-38-29__SideGate.mkv")
+	from, err := ioutil.ReadFile("../../test_files/34__103__2019-12-15_13-38-29__FrontDoor.mkv")
 	if err != nil {
 		log.Fatalf("during test: %v", err)
 	}

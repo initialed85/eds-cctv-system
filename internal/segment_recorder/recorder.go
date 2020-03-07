@@ -31,8 +31,10 @@ func RecordSegments(netCamURL, destinationPath, cameraName string, duration int)
 		"1",
 		"-strftime",
 		"1",
+		"-x264-params",
+		"keyint=100:scenecut=0",
 		"-g",
-		"10",
+		"100",
 		filepath.Join(destinationPath, "Segment_%Y-%m-%d_%H-%M-%S_"+cameraName+".mp4"),
 	)
 }
