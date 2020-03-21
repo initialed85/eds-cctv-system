@@ -87,7 +87,7 @@ func (w *Watcher) handle(event fsnotify.Event, timestamp time.Time) bool {
 
 	log.Printf("calling callback w/ %v lines", len(allAdded))
 
-	w.callback(timestamp, allAdded)
+	go w.callback(timestamp, allAdded)
 
 	w.last = this
 

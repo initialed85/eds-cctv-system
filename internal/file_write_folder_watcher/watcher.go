@@ -83,7 +83,7 @@ func (w *Watcher) handle(event fsnotify.Event, timestamp time.Time) bool {
 	if pathChanged {
 		log.Printf("calling callback w/ %v", lastPath)
 
-		w.callback(timestamp, lastPath)
+		go w.callback(timestamp, lastPath)
 	}
 
 	w.last[suffix] = path
