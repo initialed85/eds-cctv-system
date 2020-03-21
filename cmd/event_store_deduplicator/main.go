@@ -10,7 +10,7 @@ func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
 	sourcePath := flag.String("sourcePath", "", "source event store")
-	destinationPath := flag.String("path", "", "destination event store")
+	destinationPath := flag.String("destinationPath", "", "destination event store")
 
 	flag.Parse()
 
