@@ -26,3 +26,6 @@ go test ./pkg/motion_config_segment_recorder
 go test ./pkg/motion_log_event_handler
 go test ./pkg/segment_folder_event_handler
 go test ./pkg/event_store_deduplicator
+
+source venv/bin/activate
+python -m pytest -v -s utils

@@ -11,6 +11,11 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 	log.Printf("converting video %v to %vx%v at %v", sourcePath, width, height, destinationPath)
 
 	return common.RunCommand(
+		"cpulimit",
+		"-f",
+		"-l",
+		"50",
+		"--",
 		"ffmpeg",
 		"-y",
 		"-i",
