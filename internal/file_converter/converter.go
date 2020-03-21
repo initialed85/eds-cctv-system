@@ -14,7 +14,7 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 		"cpulimit",
 		"-f",
 		"-l",
-		"25",
+		"100",
 		"--",
 		"ffmpeg",
 		"-y",
