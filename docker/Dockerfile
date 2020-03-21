@@ -36,7 +36,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
     tzdata supervisor libjpeg8-dev libmicrohttpd-dev libavformat-dev libavcodec-dev libavutil-dev \
-    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick nginx logrotate python3-pip
+    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick nginx logrotate python3-pip cpulimit
 
 RUN dpkg-reconfigure -f noninteractive tzdata
 
