@@ -125,7 +125,7 @@ func (r *Renderer) callback(store event_store.Store) {
 
 	now := time.Now()
 
-	eventsByDate := store.GetAllByDate()
+	eventsByDate := store.GetAllDescendingByDateDescending()
 
 	for eventsDate, events := range eventsByDate {
 		eventsHTML, err := page_renderer.RenderPage(r.title, truncatePaths(events), eventsDate, now)

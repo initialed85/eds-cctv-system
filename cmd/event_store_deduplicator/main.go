@@ -9,15 +9,20 @@ import (
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 
-	path := flag.String("path", "", "Path to serve")
+	sourcePath := flag.String("sourcePath", "", "source event store")
+	destinationPath := flag.String("path", "", "destination event store")
 
 	flag.Parse()
 
-	if *path == "" {
-		log.Fatal("-path cannot be empty")
+	if *sourcePath == "" {
+		log.Fatal("-sourcePath cannot be empty")
 	}
 
-	d := event_store_deduplicator.New(*path)
+	if *destinationPath == "" {
+		log.Fatal("-destinationPath cannot be empty")
+	}
+
+	d := event_store_deduplicator.New(*sourcePath, *destinationPath)
 
 	err := d.Deduplicate()
 	if err != nil {

@@ -37,7 +37,7 @@ func TestUpdater(t *testing.T) {
 	eventsByDate := make(map[time.Time][]event_store.Event)
 	callback := func(store event_store.Store) {
 		updated = true
-		eventsByDate = store.GetAllByDate()
+		eventsByDate = store.GetAllDescendingByDateDescending()
 	}
 
 	updater, err := New(store, callback)
@@ -51,7 +51,7 @@ func TestUpdater(t *testing.T) {
 	assert.Equal(t, false, updated)
 
 	updated = false
-	store.Add(event1)
+	store.Overwrite(event1)
 	err = store.Append()
 	if err != nil {
 		log.Fatal(err)
@@ -68,8 +68,8 @@ func TestUpdater(t *testing.T) {
 	)
 
 	updated = false
-	store.Add(event2)
-	store.Add(event3)
+	store.Overwrite(event2)
+	store.Overwrite(event3)
 	err = store.Append()
 	if err != nil {
 		log.Fatal(err)

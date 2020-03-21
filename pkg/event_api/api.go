@@ -63,13 +63,13 @@ func (a *API) handleResponse(v interface{}, w http.ResponseWriter) {
 func (a *API) handleEvents(w http.ResponseWriter, r *http.Request) {
 	a.updateStore()
 
-	a.handleResponse(a.store.GetAll(), w)
+	a.handleResponse(a.store.GetAllDescending(), w)
 }
 
 func (a *API) handleEventsByDate(w http.ResponseWriter, r *http.Request) {
 	a.updateStore()
 
-	a.handleResponse(a.store.GetAllByDate(), w)
+	a.handleResponse(a.store.GetAllDescendingByDateDescending(), w)
 }
 
 func (a *API) AddEvent(timestamp time.Time, cameraName, highResImagePath, lowResImagePath, highResVideoPath, lowResVideoPath string) error {

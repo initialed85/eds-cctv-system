@@ -2,23 +2,34 @@ package event_store_deduplicator
 
 import (
 	"github.com/initialed85/eds-cctv-system/internal/event_store"
+	"log"
 )
 
 type Deduplicator struct {
-	store event_store.Store
+	sourceStore, destinationStore event_store.Store
 }
 
-func New(path string) Deduplicator {
+func New(sourcePath, destinationPath string) Deduplicator {
 	return Deduplicator{
-		store: event_store.NewStore(path),
+		sourceStore:      event_store.NewStore(sourcePath),
+		destinationStore: event_store.NewStore(destinationPath),
 	}
 }
 
 func (d *Deduplicator) Deduplicate() error {
-	err := d.store.Read()
+	err := d.sourceStore.Read()
 	if err != nil {
 		return err
 	}
 
-	return d.store.Write()
+	log.Printf("read %v events from sourceStore", d.sourceStore.Len())
+
+	events := d.sourceStore.GetAll()
+	for _, event := range events {
+		d.destinationStore.Add(event)
+	}
+
+	log.Printf("wrote %v events to destinationStore", d.destinationStore.Len())
+
+	return d.destinationStore.Write()
 }

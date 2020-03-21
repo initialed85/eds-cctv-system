@@ -84,7 +84,7 @@ func TestRenderer(t *testing.T) {
 		folderContents,
 	)
 
-	store.Add(event1)
+	store.Overwrite(event1)
 	err = store.Append()
 	if err != nil {
 		log.Fatal(err)

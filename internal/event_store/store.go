@@ -73,12 +73,38 @@ func (s *Store) Len() int {
 	return length
 }
 
-func (s *Store) Add(event Event) {
+func (s *Store) Overwrite(event Event) {
 	log.Printf("adding/overwriting %+v", event)
 
 	s.mu.Lock()
 	s.events[event.EventID] = event
 	s.mu.Unlock()
+}
+
+func (s *Store) Add(event Event) {
+	pathComparison := fmt.Sprintf(
+		"%v-%v-%v-%v",
+		event.HighResImagePath,
+		event.HighResVideoPath,
+		event.LowResImagePath,
+		event.LowResVideoPath,
+	)
+
+	for _, otherEvent := range s.getAll() {
+		otherPathComparison := fmt.Sprintf(
+			"%v-%v-%v-%v",
+			otherEvent.HighResImagePath,
+			otherEvent.HighResVideoPath,
+			otherEvent.LowResImagePath,
+			otherEvent.LowResVideoPath,
+		)
+
+		if pathComparison == otherPathComparison {
+			return
+		}
+	}
+
+	s.Overwrite(event)
 }
 
 func (s *Store) getAll() []Event {
@@ -100,6 +126,14 @@ func (s *Store) getAll() []Event {
 func (s *Store) GetAll() []Event {
 	events := s.getAll()
 
+	log.Printf("got %v events", len(events))
+
+	return events
+}
+
+func (s *Store) GetAllDescending() []Event {
+	events := s.getAll()
+
 	sort.SliceStable(events, func(i, j int) bool {
 		return events[i].Timestamp.Unix() > events[j].Timestamp.Unix()
 	})
@@ -109,14 +143,12 @@ func (s *Store) GetAll() []Event {
 	return events
 }
 
-func (s *Store) GetAllByDate() map[time.Time][]Event {
-	allEvents := s.GetAll()
+func (s *Store) GetAllDescendingByDateDescending() map[time.Time][]Event {
+	allEvents := s.GetAllDescending()
 
 	eventsByDate := make(map[time.Time][]Event)
 
 	for _, event := range allEvents {
-		// date := event.Timestamp.Truncate(time.Hour * 24)
-
 		date, _ := time.Parse("2006-01-02", event.Timestamp.Format("2006-01-02"))
 
 		_, ok := eventsByDate[date]
@@ -152,7 +184,7 @@ func (s *Store) GetAllByDate() map[time.Time][]Event {
 	return sortedEventsByDate
 }
 
-func (s *Store) Get(eventID uuid.UUID) (Event, error) {
+func (s *Store) GetByUUID(eventID uuid.UUID) (Event, error) {
 	s.mu.Lock()
 	event, ok := s.events[eventID]
 	s.mu.Unlock()

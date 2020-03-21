@@ -25,14 +25,14 @@ func TestDeduplicator(t *testing.T) {
 		log.Fatalf("during test: %v", err)
 	}
 
-	path := filepath.Join(dir, "some_file.txt")
+	sourcePath := filepath.Join(dir, "source_store.txt")
 
-	store := event_store.NewStore(path)
+	store := event_store.NewStore(sourcePath)
 	for i := 0; i < 4; i++ {
-		store.Add(event1)
-		store.Add(event2)
-		store.Add(event3)
-		store.Add(event4)
+		store.Overwrite(event1)
+		store.Overwrite(event2)
+		store.Overwrite(event3)
+		store.Overwrite(event4)
 
 		err := store.Append()
 		if err != nil {
@@ -42,14 +42,16 @@ func TestDeduplicator(t *testing.T) {
 
 	assert.Equal(t, 3, store.Len())
 
-	jsonLines, err := event_store.ReadJSONLines(path)
+	jsonLines, err := event_store.ReadJSONLines(sourcePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	assert.Equal(t, 12, len(jsonLines))
 
-	deduplicator := New(path)
+	destinationPath := filepath.Join(dir, "destination_store.txt")
+
+	deduplicator := New(sourcePath, destinationPath)
 
 	err = deduplicator.Deduplicate()
 	if err != nil {
@@ -63,7 +65,14 @@ func TestDeduplicator(t *testing.T) {
 
 	assert.Equal(t, 3, store.Len())
 
-	jsonLines, err = event_store.ReadJSONLines(path)
+	jsonLines, err = event_store.ReadJSONLines(sourcePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	assert.Equal(t, 12, len(jsonLines))
+
+	jsonLines, err = event_store.ReadJSONLines(destinationPath)
 	if err != nil {
 		log.Fatal(err)
 	}
