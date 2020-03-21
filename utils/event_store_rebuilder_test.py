@@ -13,7 +13,7 @@ from .event_store_rebuilder import (
     relate_path_details,
     build_event_for_some_path_details,
     format_timestamp_for_go,
-    build_events_for_path_details_by_key,
+    build_events_for_related_path_details,
     Event,
     build_json_lines_from_events,
     rebuild_event_store,
@@ -820,8 +820,8 @@ _SOME_PATH_DETAILS = [
     ),
 ]
 
-_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
-    (1, 102, "FrontDoor"): [
+_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = [
+    [
         PathDetails(
             path=PosixPath("01__102__2020-03-03_00-26-28__FrontDoor.mkv"),
             event_id=1,
@@ -867,7 +867,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (2, 102, "FrontDoor"): [
+    [
         PathDetails(
             path=PosixPath("02__102__2020-03-03_00-27-15__FrontDoor.jpg"),
             event_id=2,
@@ -913,7 +913,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (1, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("01__101__2020-03-03_00-43-24__Driveway.jpg"),
             event_id=1,
@@ -959,7 +959,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (2, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("02__101__2020-03-03_00-47-16__Driveway.jpg"),
             event_id=2,
@@ -1005,7 +1005,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (3, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("03__101__2020-03-03_00-49-52__Driveway.jpg"),
             event_id=3,
@@ -1051,7 +1051,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (4, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("04__101__2020-03-03_01-00-39__Driveway.jpg"),
             event_id=4,
@@ -1097,7 +1097,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (5, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("05__101__2020-03-03_01-01-24__Driveway.jpg"),
             event_id=5,
@@ -1143,7 +1143,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (3, 102, "FrontDoor"): [
+    [
         PathDetails(
             path=PosixPath("03__102__2020-03-03_01-01-51__FrontDoor.mkv"),
             event_id=3,
@@ -1189,7 +1189,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (6, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("06__101__2020-03-03_01-02-03__Driveway.jpg"),
             event_id=6,
@@ -1235,7 +1235,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (7, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("07__101__2020-03-03_01-02-30__Driveway.jpg"),
             event_id=7,
@@ -1281,7 +1281,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (8, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("08__101__2020-03-03_01-04-35__Driveway.jpg"),
             event_id=8,
@@ -1327,7 +1327,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (4, 102, "FrontDoor"): [
+    [
         PathDetails(
             path=PosixPath("04__102__2020-03-03_01-05-05__FrontDoor.mkv"),
             event_id=4,
@@ -1373,7 +1373,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (9, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("09__101__2020-03-03_01-27-27__Driveway.jpg"),
             event_id=9,
@@ -1419,7 +1419,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (10, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("10__101__2020-03-03_01-48-27__Driveway.jpg"),
             event_id=10,
@@ -1465,7 +1465,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (11, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("11__101__2020-03-03_01-54-19__Driveway.jpg"),
             event_id=11,
@@ -1511,7 +1511,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-    (12, 101, "Driveway"): [
+    [
         PathDetails(
             path=PosixPath("12__101__2020-03-03_01-58-52__Driveway.jpg"),
             event_id=12,
@@ -1557,7 +1557,7 @@ _PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH = {
             is_lowres=True,
         ),
     ],
-}
+]
 
 _EVENT_FROM_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH_FIRST_RECORD = Event(
     event_id="028a7569-549a-396c-9a95-ed4a2d8118f1",
@@ -1577,7 +1577,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/01__102__2020-03-03_00-26-28__FrontDoor.mkv",
         low_res_image_path="/srv/target_dir/events/01__102__2020-03-03_00-26-30__FrontDoor-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/01__102__2020-03-03_00-26-28__FrontDoor-lowres.mkv",
-        timestamp="2020-03-03 00:26:28+08:00",
+        timestamp="2020-03-03T00:26:28.00000000+08:00",
     ),
     Event(
         camera_name="FrontDoor",
@@ -1586,7 +1586,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/02__102__2020-03-03_00-27-13__FrontDoor.mkv",
         low_res_image_path="/srv/target_dir/events/02__102__2020-03-03_00-27-15__FrontDoor-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/02__102__2020-03-03_00-27-13__FrontDoor-lowres.mkv",
-        timestamp="2020-03-03 00:27:13+08:00",
+        timestamp="2020-03-03T00:27:13.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1595,7 +1595,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/01__101__2020-03-03_00-43-22__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/01__101__2020-03-03_00-43-24__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/01__101__2020-03-03_00-43-22__Driveway-lowres.mkv",
-        timestamp="2020-03-03 00:43:22+08:00",
+        timestamp="2020-03-03T00:43:22.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1604,7 +1604,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/02__101__2020-03-03_00-47-14__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/02__101__2020-03-03_00-47-16__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/02__101__2020-03-03_00-47-14__Driveway-lowres.mkv",
-        timestamp="2020-03-03 00:47:14+08:00",
+        timestamp="2020-03-03T00:47:14.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1613,7 +1613,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/03__101__2020-03-03_00-49-50__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/03__101__2020-03-03_00-49-52__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/03__101__2020-03-03_00-49-50__Driveway-lowres.mkv",
-        timestamp="2020-03-03 00:49:50+08:00",
+        timestamp="2020-03-03T00:49:50.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1622,7 +1622,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/04__101__2020-03-03_01-00-37__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/04__101__2020-03-03_01-00-39__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/04__101__2020-03-03_01-00-37__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:00:37+08:00",
+        timestamp="2020-03-03T01:00:37.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1631,7 +1631,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/05__101__2020-03-03_01-01-23__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/05__101__2020-03-03_01-01-24__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/05__101__2020-03-03_01-01-23__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:01:23+08:00",
+        timestamp="2020-03-03T01:01:23.00000000+08:00",
     ),
     Event(
         camera_name="FrontDoor",
@@ -1640,7 +1640,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/03__102__2020-03-03_01-01-51__FrontDoor.mkv",
         low_res_image_path="/srv/target_dir/events/03__102__2020-03-03_01-01-53__FrontDoor-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/03__102__2020-03-03_01-01-51__FrontDoor-lowres.mkv",
-        timestamp="2020-03-03 01:01:51+08:00",
+        timestamp="2020-03-03T01:01:51.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1649,7 +1649,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/06__101__2020-03-03_01-02-01__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/06__101__2020-03-03_01-02-03__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/06__101__2020-03-03_01-02-01__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:02:01+08:00",
+        timestamp="2020-03-03T01:02:01.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1658,7 +1658,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/07__101__2020-03-03_01-02-28__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/07__101__2020-03-03_01-02-30__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/07__101__2020-03-03_01-02-28__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:02:28+08:00",
+        timestamp="2020-03-03T01:02:28.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1667,7 +1667,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/08__101__2020-03-03_01-04-34__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/08__101__2020-03-03_01-04-35__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/08__101__2020-03-03_01-04-34__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:04:34+08:00",
+        timestamp="2020-03-03T01:04:34.00000000+08:00",
     ),
     Event(
         camera_name="FrontDoor",
@@ -1676,7 +1676,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/04__102__2020-03-03_01-05-05__FrontDoor.mkv",
         low_res_image_path="/srv/target_dir/events/04__102__2020-03-03_01-05-07__FrontDoor-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/04__102__2020-03-03_01-05-05__FrontDoor-lowres.mkv",
-        timestamp="2020-03-03 01:05:05+08:00",
+        timestamp="2020-03-03T01:05:05.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1685,7 +1685,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/09__101__2020-03-03_01-27-25__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/09__101__2020-03-03_01-27-27__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/09__101__2020-03-03_01-27-25__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:27:25+08:00",
+        timestamp="2020-03-03T01:27:25.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1694,7 +1694,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/10__101__2020-03-03_01-48-26__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/10__101__2020-03-03_01-48-27__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/10__101__2020-03-03_01-48-26__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:48:26+08:00",
+        timestamp="2020-03-03T01:48:26.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1703,7 +1703,7 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/11__101__2020-03-03_01-54-17__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/11__101__2020-03-03_01-54-19__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/11__101__2020-03-03_01-54-17__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:54:17+08:00",
+        timestamp="2020-03-03T01:54:17.00000000+08:00",
     ),
     Event(
         camera_name="Driveway",
@@ -1712,26 +1712,26 @@ _SORTED_EVENTS = [
         high_res_video_path="/srv/target_dir/events/12__101__2020-03-03_01-58-50__Driveway.mkv",
         low_res_image_path="/srv/target_dir/events/12__101__2020-03-03_01-58-52__Driveway-lowres.jpg",
         low_res_video_path="/srv/target_dir/events/12__101__2020-03-03_01-58-50__Driveway-lowres.mkv",
-        timestamp="2020-03-03 01:58:50+08:00",
+        timestamp="2020-03-03T01:58:50.00000000+08:00",
     ),
 ]
 
-_JSON_LINES = """{"event_id": "028a7569-549a-396c-9a95-ed4a2d8118f1", "timestamp": "2020-03-03 00:26:28+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-30__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-30__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-28__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-28__FrontDoor-lowres.mkv"}
-{"event_id": "b3517c2d-a987-3296-94bc-9ab25c223129", "timestamp": "2020-03-03 00:27:13+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-15__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-15__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-13__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-13__FrontDoor-lowres.mkv"}
-{"event_id": "bfbcf1a9-00a1-317f-8901-ff140725fb2c", "timestamp": "2020-03-03 00:43:22+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-24__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-24__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-22__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-22__Driveway-lowres.mkv"}
-{"event_id": "cced7bca-a745-3f74-95b1-8654eaf95878", "timestamp": "2020-03-03 00:47:14+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-16__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-16__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-14__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-14__Driveway-lowres.mkv"}
-{"event_id": "ee4eb6f2-710d-3e02-aee0-0ba8fdb423b4", "timestamp": "2020-03-03 00:49:50+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-52__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-52__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-50__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-50__Driveway-lowres.mkv"}
-{"event_id": "8d799eeb-542b-372a-beac-b6ea9727410e", "timestamp": "2020-03-03 01:00:37+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-39__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-39__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-37__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-37__Driveway-lowres.mkv"}
-{"event_id": "40198285-b26c-31e0-b51c-647ad52f6a83", "timestamp": "2020-03-03 01:01:23+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-24__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-24__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-23__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-23__Driveway-lowres.mkv"}
-{"event_id": "be1e1c6b-be6a-3db4-81df-2774f61bc9f2", "timestamp": "2020-03-03 01:01:51+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-53__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-53__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-51__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-51__FrontDoor-lowres.mkv"}
-{"event_id": "437aa95d-ac50-3626-be8f-e5498e17d7b7", "timestamp": "2020-03-03 01:02:01+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-03__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-03__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-01__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-01__Driveway-lowres.mkv"}
-{"event_id": "c1ad867b-0a43-332b-8eb7-adf6c025fed5", "timestamp": "2020-03-03 01:02:28+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-30__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-30__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-28__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-28__Driveway-lowres.mkv"}
-{"event_id": "ca77ae39-92e6-3d1a-8ff3-9434b889aa15", "timestamp": "2020-03-03 01:04:34+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-35__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-35__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-34__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-34__Driveway-lowres.mkv"}
-{"event_id": "1ab2183e-d859-3821-9081-0927469d55c2", "timestamp": "2020-03-03 01:05:05+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-07__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-07__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-05__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-05__FrontDoor-lowres.mkv"}
-{"event_id": "eefba6ae-7be3-3158-a94f-59a5c191c385", "timestamp": "2020-03-03 01:27:25+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-27__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-27__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-25__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-25__Driveway-lowres.mkv"}
-{"event_id": "4966768d-cec7-3c88-a183-d47c2093d5eb", "timestamp": "2020-03-03 01:48:26+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-27__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-27__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-26__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-26__Driveway-lowres.mkv"}
-{"event_id": "ff1a771c-720f-3d51-af87-f557996934a0", "timestamp": "2020-03-03 01:54:17+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-19__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-19__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-17__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-17__Driveway-lowres.mkv"}
-{"event_id": "8fd397f2-8dd4-36d0-8d54-bcbb09daf7c4", "timestamp": "2020-03-03 01:58:50+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-52__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-52__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-50__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-50__Driveway-lowres.mkv"}"""
+_JSON_LINES = """{"event_id": "028a7569-549a-396c-9a95-ed4a2d8118f1", "timestamp": "2020-03-03T00:26:28.00000000+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-30__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-30__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-28__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/01__102__2020-03-03_00-26-28__FrontDoor-lowres.mkv"}
+{"event_id": "b3517c2d-a987-3296-94bc-9ab25c223129", "timestamp": "2020-03-03T00:27:13.00000000+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-15__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-15__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-13__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/02__102__2020-03-03_00-27-13__FrontDoor-lowres.mkv"}
+{"event_id": "bfbcf1a9-00a1-317f-8901-ff140725fb2c", "timestamp": "2020-03-03T00:43:22.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-24__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-24__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-22__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/01__101__2020-03-03_00-43-22__Driveway-lowres.mkv"}
+{"event_id": "cced7bca-a745-3f74-95b1-8654eaf95878", "timestamp": "2020-03-03T00:47:14.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-16__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-16__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-14__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/02__101__2020-03-03_00-47-14__Driveway-lowres.mkv"}
+{"event_id": "ee4eb6f2-710d-3e02-aee0-0ba8fdb423b4", "timestamp": "2020-03-03T00:49:50.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-52__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-52__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-50__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/03__101__2020-03-03_00-49-50__Driveway-lowres.mkv"}
+{"event_id": "8d799eeb-542b-372a-beac-b6ea9727410e", "timestamp": "2020-03-03T01:00:37.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-39__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-39__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-37__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/04__101__2020-03-03_01-00-37__Driveway-lowres.mkv"}
+{"event_id": "40198285-b26c-31e0-b51c-647ad52f6a83", "timestamp": "2020-03-03T01:01:23.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-24__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-24__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-23__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/05__101__2020-03-03_01-01-23__Driveway-lowres.mkv"}
+{"event_id": "be1e1c6b-be6a-3db4-81df-2774f61bc9f2", "timestamp": "2020-03-03T01:01:51.00000000+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-53__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-53__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-51__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/03__102__2020-03-03_01-01-51__FrontDoor-lowres.mkv"}
+{"event_id": "437aa95d-ac50-3626-be8f-e5498e17d7b7", "timestamp": "2020-03-03T01:02:01.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-03__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-03__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-01__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/06__101__2020-03-03_01-02-01__Driveway-lowres.mkv"}
+{"event_id": "c1ad867b-0a43-332b-8eb7-adf6c025fed5", "timestamp": "2020-03-03T01:02:28.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-30__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-30__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-28__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/07__101__2020-03-03_01-02-28__Driveway-lowres.mkv"}
+{"event_id": "ca77ae39-92e6-3d1a-8ff3-9434b889aa15", "timestamp": "2020-03-03T01:04:34.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-35__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-35__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-34__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/08__101__2020-03-03_01-04-34__Driveway-lowres.mkv"}
+{"event_id": "1ab2183e-d859-3821-9081-0927469d55c2", "timestamp": "2020-03-03T01:05:05.00000000+08:00", "camera_name": "FrontDoor", "high_res_image_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-07__FrontDoor.jpg", "low_res_image_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-07__FrontDoor-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-05__FrontDoor.mkv", "low_res_video_path": "/srv/target_dir/events/04__102__2020-03-03_01-05-05__FrontDoor-lowres.mkv"}
+{"event_id": "eefba6ae-7be3-3158-a94f-59a5c191c385", "timestamp": "2020-03-03T01:27:25.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-27__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-27__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-25__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/09__101__2020-03-03_01-27-25__Driveway-lowres.mkv"}
+{"event_id": "4966768d-cec7-3c88-a183-d47c2093d5eb", "timestamp": "2020-03-03T01:48:26.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-27__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-27__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-26__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/10__101__2020-03-03_01-48-26__Driveway-lowres.mkv"}
+{"event_id": "ff1a771c-720f-3d51-af87-f557996934a0", "timestamp": "2020-03-03T01:54:17.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-19__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-19__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-17__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/11__101__2020-03-03_01-54-17__Driveway-lowres.mkv"}
+{"event_id": "8fd397f2-8dd4-36d0-8d54-bcbb09daf7c4", "timestamp": "2020-03-03T01:58:50.00000000+08:00", "camera_name": "Driveway", "high_res_image_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-52__Driveway.jpg", "low_res_image_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-52__Driveway-lowres.jpg", "high_res_video_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-50__Driveway.mkv", "low_res_video_path": "/srv/target_dir/events/12__101__2020-03-03_01-58-50__Driveway-lowres.mkv"}"""
 
 
 class EventStoreRebuilderTest(unittest.TestCase):
@@ -1777,9 +1777,7 @@ class EventStoreRebuilderTest(unittest.TestCase):
         self.assertEqual(
             _EVENT_FROM_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH_FIRST_RECORD,
             build_event_for_some_path_details(
-                some_path_details=_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH[
-                    (1, 102, "FrontDoor")
-                ],
+                some_path_details=_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH[0],
                 path=PosixPath("/srv/target_dir/events/"),
             ),
         )
@@ -1794,13 +1792,15 @@ class EventStoreRebuilderTest(unittest.TestCase):
 
         self.assertEqual(
             _SORTED_EVENTS,
-            build_events_for_path_details_by_key(
-                some_path_details_by_key=_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH,
+            build_events_for_related_path_details(
+                related_path_details=_PATH_DETAILS_BY_KEY_IMMEDIATE_MATCH,
                 path=PosixPath("/srv/target_dir/events"),
             ),
         )
 
     def test_build_json_lines_from_events(self):
+        # print(build_json_lines_from_events(_SORTED_EVENTS))
+
         self.assertEqual(_JSON_LINES, build_json_lines_from_events(_SORTED_EVENTS))
 
     def test_rebuild_event_store(self):
@@ -1824,3 +1824,14 @@ class EventStoreRebuilderTest(unittest.TestCase):
             self.assertIn(path.low_res_image_path.split("/")[-1], data)
             self.assertIn(path.high_res_video_path.split("/")[-1], data)
             self.assertIn(path.low_res_video_path.split("/")[-1], data)
+
+    def test_many_paths_with_poor_data_sanity(self):
+        sorted_paths = _sorted_paths_events
+        tzinfo = _TZINFO
+
+        some_path_details = parse_paths(paths=sorted_paths, tzinfo=tzinfo)
+        some_path_details_by_key = relate_path_details(
+            some_path_details=some_path_details
+        )
+
+        self.assertEqual(5275, len(some_path_details_by_key))

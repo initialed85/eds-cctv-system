@@ -68,31 +68,65 @@ def parse_path(path: Path, tzinfo: datetime.tzinfo) -> Optional[PathDetails]:
 
 
 def parse_paths(paths: List[Path], tzinfo: datetime.tzinfo) -> List[PathDetails]:
-    return [parse_path(path=x, tzinfo=tzinfo) for x in paths if x is not None]
+    return [
+        y
+        for y in [parse_path(path=x, tzinfo=tzinfo) for x in paths if x is not None]
+        if y is not None
+    ]
 
 
-def _get_key(path_details: PathDetails) -> Tuple[int, int, str]:
-    return (path_details.event_id, path_details.camera_id, path_details.camera_name)
+def _get_key_pass_1(path_details: PathDetails) -> Tuple[int, int, str]:
+    return (
+        path_details.event_id,
+        path_details.camera_id,
+        path_details.camera_name,
+    )
+
+
+def _get_key_pass_2(path_details: PathDetails) -> Tuple[int, int, str, str]:
+    return (
+        path_details.event_id,
+        path_details.camera_id,
+        path_details.camera_name,
+        path_details.timestamp.strftime("%Y-%m-%d %H"),
+    )
+
+
+def _get_key_pass_3(path_details: PathDetails) -> Tuple[int, int, str, str]:
+    return (
+        path_details.event_id,
+        path_details.camera_id,
+        path_details.camera_name,
+        path_details.timestamp.strftime("%Y-%m-%d %H:%M"),
+    )
 
 
 def relate_path_details(
     some_path_details: List[PathDetails],
-) -> Dict[Tuple[int, int, str], List[PathDetails]]:
-    some_path_details_by_key: Dict[Tuple[int, int, str], List[PathDetails]] = {}
-    for some_path_details in some_path_details:
-        key = _get_key(some_path_details)
-        some_path_details_by_key.setdefault(key, [])
-        some_path_details_by_key[key] += [some_path_details]
+) -> List[List[PathDetails]]:
 
-    lens = [len(x) for x in some_path_details_by_key.values()]
+    some_path_details_by_key = {}
+    for path_details in some_path_details:
+        keys = [
+            _get_key_pass_1(path_details),
+            _get_key_pass_2(path_details),
+            _get_key_pass_3(path_details),
+        ]
 
-    # most likely matched everything- nice; return early
-    if len(lens) > 0 and min(lens) == 4 and max(lens) == 4:
-        return some_path_details_by_key
+        for key in keys:
+            some_path_details_by_key.setdefault(key, [])
+            some_path_details_by_key[key] += [path_details]
 
-    raise RuntimeError(
-        "min matches = {}, max matches = {}".format(min(lens), max(lens))
-    )
+    viable_some_path_details_by_key = {
+        k: v for k, v in some_path_details_by_key.items() if len(v) == 4
+    }
+
+    deduplicated_path_details = []
+    for some_path_details in viable_some_path_details_by_key.values():
+        if some_path_details not in deduplicated_path_details:
+            deduplicated_path_details += [some_path_details]
+
+    return deduplicated_path_details
 
 
 def format_timestamp_for_go(timestamp: datetime.datetime) -> str:
@@ -188,25 +222,23 @@ def build_event_for_some_path_details(some_path_details: List[PathDetails], path
     )
 
 
-def build_events_for_path_details_by_key(
-    some_path_details_by_key: Dict[Tuple[int, int, str], List[PathDetails]], path: Path
+def build_events_for_related_path_details(
+    related_path_details: List[List[PathDetails]], path: Path
 ) -> List[Event]:
     events: List[Event] = []
-    for some_path_details in some_path_details_by_key.values():
+    for some_path_details in related_path_details:
         events += [
             build_event_for_some_path_details(
                 some_path_details=some_path_details, path=path
             )
         ]
 
-    sorted_events: List[Tuple[datetime.datetime, Event]] = sorted(
-        (x.timestamp, x) for x in events
-    )
+    sorted_events = sorted(events, key=lambda x: x.timestamp)
 
-    for _, event in sorted_events:
-        event.timestamp = str(event.timestamp)
+    for event in sorted_events:
+        event.timestamp = format_timestamp_for_go(timestamp=event.timestamp)
 
-    return [x[1] for x in sorted_events]
+    return sorted_events
 
 
 def build_json_lines_from_events(events: List[Event]) -> str:
@@ -234,16 +266,46 @@ def write_to_file(path: Path, data: str):
 
 
 def rebuild_event_store(root_path: Path, tzinfo: datetime.tzinfo, json_path: Path):
+    print(f"getting sorted paths from {root_path}...")
     sorted_paths = get_sorted_paths(path=root_path)
+    print(f"got {len(sorted_paths)} sorted paths")
 
+    print("parsing sorted paths...")
     some_path_details = parse_paths(paths=sorted_paths, tzinfo=tzinfo)
+    print(f"got {len(some_path_details)} parsed paths")
 
-    some_path_details_by_key = relate_path_details(some_path_details=some_path_details)
+    print("relating parsed paths...")
+    related_path_details = relate_path_details(some_path_details=some_path_details)
+    print(f"got {len(related_path_details)} related paths")
 
-    events = build_events_for_path_details_by_key(
-        some_path_details_by_key=some_path_details_by_key, path=root_path
+    print("building events...")
+    events = build_events_for_related_path_details(
+        related_path_details=related_path_details, path=root_path
     )
+    print(f"built {len(events)} events")
 
+    print("building json lines...")
     json_lines = build_json_lines_from_events(events=events)
+    print(f"built {len(json_lines)} bytes")
 
+    print(f"writing to {json_path}")
     write_to_file(path=json_path, data=json_lines)
+    print("done.")
+
+
+if __name__ == "__main__":
+    import argparse
+    from dateutil.tz import tzoffset
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-r", "--root-path", type=str, required=True)
+    parser.add_argument("-j", "--json-path", type=str, required=True)
+
+    args = parser.parse_args()
+
+    rebuild_event_store(
+        root_path=args.root_path,
+        tzinfo=tzoffset(name="WST-8", offset=8 * 60 * 60),
+        json_path=args.json_path,
+    )
