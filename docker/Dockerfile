@@ -36,9 +36,11 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
     tzdata supervisor libjpeg8-dev libmicrohttpd-dev libavformat-dev libavcodec-dev libavutil-dev \
-    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick nginx logrotate
+    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick nginx logrotate python3-pip
 
 RUN dpkg-reconfigure -f noninteractive tzdata
+
+RUN pip3 install python-dateutil
 
 # router
 EXPOSE 80
@@ -76,5 +78,6 @@ COPY --from=go_build /srv/event_store_deduplicator /usr/local/bin/event_store_de
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh
+COPY utils/event_store_rebuilder.py /usr/local/bin/event_store_rebuilder
 
 ENTRYPOINT ["/srv/entrypoint.sh"]
