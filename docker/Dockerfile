@@ -78,6 +78,8 @@ COPY --from=go_build /srv/event_store_deduplicator /usr/local/bin/event_store_de
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisor-apps.conf /etc/supervisor/conf.d/supervisor-apps.conf
 COPY docker/entrypoint.sh /srv/entrypoint.sh
-COPY utils/event_store_rebuilder.py /usr/local/bin/event_store_rebuilder
+COPY utils/common.py /usr/local/bin/common.py
+COPY utils/event_store_rebuilder_for_events.py /usr/local/bin/event_store_rebuilder_for_events
+COPY utils/event_store_rebuilder_for_segments.py /usr/local/bin/event_store_rebuilder_for_segments
 
 ENTRYPOINT ["/srv/entrypoint.sh"]

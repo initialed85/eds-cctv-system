@@ -2,6 +2,7 @@
 
 source env.sh
 
+export DOCKER_BUILDKIT=1
 if ! docker build -t "${IMAGE_NAME}" -f docker/Dockerfile .; then
   echo "error: build failed"
 
