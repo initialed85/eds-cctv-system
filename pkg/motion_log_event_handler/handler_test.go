@@ -2,11 +2,13 @@ package motion_log_event_handler
 
 import (
 	"fmt"
+	"github.com/mitchellh/go-ps"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -47,7 +49,37 @@ func appendToFile(path, data string) error {
 	return writeFileWithFlags(path, data, os.O_APPEND|os.O_CREATE|os.O_WRONLY)
 }
 
-func TestMotionLogEventStreamer(t *testing.T) {
+func waitWhileRunning() {
+	time.Sleep(time.Second)
+
+	for {
+		processes, err := ps.Processes()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		stillRunning := false
+		for _, p := range processes {
+			if strings.Contains(p.Executable(), "cpulimit") || strings.Contains(p.Executable(), "ffmpeg") || strings.Contains(p.Executable(), "convert") {
+				stillRunning = true
+
+				break
+			}
+		}
+
+		if stillRunning {
+			time.Sleep(time.Millisecond * 100)
+
+			continue
+		}
+
+		time.Sleep(time.Second)
+
+		return
+	}
+}
+
+func TestMotionLogEventHandler(t *testing.T) {
 	var lastCameraName string
 	var lastHighResImagePath string
 	var lastLowResImagePath string
@@ -128,7 +160,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Second)
+	waitWhileRunning()
 	assert.Equal(t, "", lastCameraName)
 	assert.Equal(t, "", lastHighResImagePath)
 	assert.Equal(t, "", lastLowResImagePath)
@@ -140,7 +172,7 @@ func TestMotionLogEventStreamer(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	time.Sleep(time.Second * 2)
+	waitWhileRunning()
 	assert.Equal(t, "FrontDoor", lastCameraName)
 	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__FrontDoor.jpg", lastHighResImagePath)
 	assert.Equal(t, "../../test_files/34__103__2019-12-15_13-38-31__FrontDoor-lowres.jpg", lastLowResImagePath)

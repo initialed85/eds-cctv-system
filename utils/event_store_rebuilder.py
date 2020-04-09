@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 
 import datetime
-from pathlib import Path
-from types import SimpleNamespace
-from typing import NamedTuple, Tuple, Dict, List, Optional, Union
-from uuid import uuid3, NAMESPACE_DNS
-
 import json
 import os
+from pathlib import Path
+from types import SimpleNamespace
+from typing import NamedTuple, Tuple, List, Optional, Union
+from uuid import uuid3, NAMESPACE_DNS
 
 _VIDEO_SUFFIXES = [".mkv", ".mp4"]
 _IMAGE_SUFFIXES = [".jpg"]
@@ -104,7 +103,6 @@ def _get_key_pass_3(path_details: PathDetails) -> Tuple[int, int, str, str]:
 def relate_path_details(
     some_path_details: List[PathDetails],
 ) -> List[List[PathDetails]]:
-
     some_path_details_by_key = {}
     for path_details in some_path_details:
         keys = [

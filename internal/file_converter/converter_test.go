@@ -6,10 +6,11 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
-// needs ffmpeg installed
+// needs ffmpeg and cpulimit installed
 func TestConvertVideo(t *testing.T) {
 	dir, err := ioutil.TempDir("", "eds-cctv-system")
 	if err != nil {
@@ -36,7 +37,11 @@ func TestConvertVideo(t *testing.T) {
 	}
 
 	assert.NotEqual(t, "", stderr)
-	assert.Equal(t, "", stdout)
+	if runtime.GOOS == "darwin" {
+		assert.Equal(t, "", stdout)
+	} else {
+		assert.NotEqual(t, "", stdout)
+	}
 
 	_, err = os.Stat(path)
 	if err != nil {

@@ -28,4 +28,4 @@ go test ./pkg/segment_folder_event_handler
 go test ./pkg/event_store_deduplicator
 
 source venv/bin/activate
-python -m pytest -v -s utils
+python3 -m pytest -v -s utils
