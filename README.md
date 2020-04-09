@@ -89,6 +89,27 @@ I'll explain this by going through the processes in a running Docker container:
 - natively
     - not recommended (if you desperately want to though, look through the Dockerfile to see what's done)
 
+If you get it all running and it's been serving you well, you may become concerned about disk space- fortunately I have thought of this!
+
+I've developed another tool called [quotanizer](https://github.com/initialed85/quotanizer) that you can use to help with this problem.
+
+Probably I should include it in this container or as part of a docker-compose with this container, but here's how I run it:
+
+    git clone git@github.com:initialed85/quotanizer.git && cd quotanizer \
+    ./build.sh && docker rm -f quotanizer; docker run -d --restart=always \
+        --name quotanizer \
+        -v /media/storage/Cameras:/mnt/Cameras \
+        quotanizer \
+            -path /mnt/Cameras/events \
+            -quota 2000 \
+            -path /mnt/Cameras/segments \
+            -quota 4000 \
+            -suffix .mkv \
+            -suffix .mp4 \
+            -period 60
+
+The quota values are in GB, the period is in seconds. With 3 cameras at 1080p, I've not yet hit the event limit (2TB) after about a month of running and I'm seeing my segments pruned at about 20 days of age.
+
 ## TODO
 
 - Use Nginx for static_file_server
