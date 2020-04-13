@@ -8,4 +8,4 @@ WORKDIR /srv/
 
 COPY . /srv/
 
-CMD ./build.sh && ./test.sh
+CMD ./native_build.sh && ./native_test.sh

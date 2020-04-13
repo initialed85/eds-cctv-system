@@ -1,0 +1,37 @@
+version: '3.5'
+
+networks:
+  cctv-internal:
+    internal: true
+  cctv-external:
+
+services:
+  quotanizer:
+    networks:
+      - cctv-internal
+    build:
+      context: ./quotanizer
+    volumes:
+      - ${CCTV_EVENTS_PATH}:/mnt/events
+      - ${CCTV_SEGMENTS_PATH}:/mnt/segments
+    command: "-path /mnt/events -quota ${CCTV_EVENTS_QUOTA} -path /mnt/segments -quota ${CCTV_SEGMENTS_QUOTA} -suffix .mkv -suffix .mp4 -suffix .jpg -period 60"
+  cctv:
+    networks:
+      - cctv-internal
+      - cctv-external
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ${CCTV_MOTION_CONFIGS}:/etc/motion
+      - ${CCTV_EVENTS_PATH}:/srv/target_dir/events
+      - ${CCTV_SEGMENTS_PATH}:/srv/target_dir/segments
+    ports:
+      - 81:80
+      - 9080:8080
+      - 9081:8081
+      - 9082:8082
+      - 9083:8083
+      - 9084:8084
+    depends_on:
+      - quotanizer

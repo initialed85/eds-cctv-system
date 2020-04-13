@@ -71,46 +71,57 @@ I'll explain this by going through the processes in a running Docker container:
 ## How do I build it?
 
 - in Docker
-    - `./docker_build.sh`
-- natively
     - `./build.sh`
+- natively
+    - `./native_build.sh`
 
 ## How do I test it?
 
 - in Docker
-    - `./docker_test.sh`
+    - `./test.sh`
 - natively
-    - `./docker_build.sh` 
+    - `./native_test.sh` 
 
 ## How do I run it?
 
 - in Docker
-    - `./docker_run.sh` or `./docker_run_in_background.sh` (note: the latter is configured for my own setup)
+    - `./deploy.sh` ensuring you've set the following environment variables
+        - `CCTV_MOTION_CONFIGS` path to folder containing `motion.conf` and camera configs
+            - see `motion-configs` for my configs or `motion-configs-examples` for the defaults
+        - `CCTV_EVENTS_PATH` the path to store event videos and templated HTML
+        - `CCTV_EVENTS_QUOTA` events path quota in GB
+        - `CCTV_SEGMENTS_PATH` the path to store segments videos and templated HTML
+        - `CCTV_SEGMENTS_QUOTA` segments path quota in GB
 - natively
     - not recommended (if you desperately want to though, look through the Dockerfile to see what's done)
 
-If you get it all running and it's been serving you well, you may become concerned about disk space- fortunately I have thought of this!
+The quotas are managed by another Go tool I've written called [quotanizer](https://github.com/initialed85/quotanizer).
 
-I've developed another tool called [quotanizer](https://github.com/initialed85/quotanizer) that you can use to help with this problem.
+## How do I use it?
 
-Probably I should include it in this container or as part of a docker-compose with this container, but here's how I run it:
+Once you've deployed the service (assuming localhost in this example), you can access the following URLs:
 
-    git clone git@github.com:initialed85/quotanizer.git && cd quotanizer \
-    ./build.sh && docker rm -f quotanizer; docker run -d --restart=always \
-        --name quotanizer \
-        -v /media/storage/Cameras:/mnt/Cameras \
-        quotanizer \
-            -path /mnt/Cameras/events \
-            -quota 2000 \
-            -path /mnt/Cameras/segments \
-            -quota 4000 \
-            -suffix .mkv \
-            -suffix .mp4 \
-            -period 60
-
-The quota values are in GB, the period is in seconds. With 3 cameras at 1080p, I've not yet hit the event limit (2TB) after about a month of running and I'm seeing my segments pruned at about 20 days of age.
+- http://localhost:81/events/events.html
+    - index for templated events HTML
+- http://localhost:81/event_api/events
+    - all events as JSON
+- http://localhost:81/event_api/events_by_date
+    - all events as JSON, grouped by date
+- ws://localhost:8082/stream
+    - a WebSocket stream for any new events
+    - you should be able to hit this from http://localhost:81/event_api/stream but you can't for some reason (connects, no messages)
+- http://localhost:81/segments/events.html
+    - index for templatd segments HTML
+- http://localhost:81/segment_api/events
+    - all segments as JSON
+- http://localhost:81/segment_api/events_by_date
+    - all segments as JSON, grouped by date
+- ws://localhost:8083/stream
+    - a WebSocket stream for any new segments
+    - you should be able to hit this from http://localhost:81/segment_api/stream but you can't for some reason (connects, no messages)
 
 ## TODO
 
 - Use Nginx for static_file_server
 - Replace datastore with actual datastore (rather than hacky JSON Lines approach)
+- Figure out why the WebSocket piece doesn't work through the Nginx proxy
