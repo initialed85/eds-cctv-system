@@ -15,6 +15,7 @@ services:
       - ${CCTV_EVENTS_PATH}:/mnt/events
       - ${CCTV_SEGMENTS_PATH}:/mnt/segments
     command: "-path /mnt/events -quota ${CCTV_EVENTS_QUOTA} -path /mnt/segments -quota ${CCTV_SEGMENTS_QUOTA} -suffix .mkv -suffix .mp4 -suffix .jpg -period 60"
+    restart: always
   cctv:
     networks:
       - cctv-internal
@@ -33,5 +34,6 @@ services:
       - 9082:8082
       - 9083:8083
       - 9084:8084
+   restart: always
     depends_on:
       - quotanizer
