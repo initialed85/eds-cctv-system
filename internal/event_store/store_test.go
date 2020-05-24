@@ -61,7 +61,7 @@ func TestStore(t *testing.T) {
 			time2: {{EventID: uuid.UUID{0xb8, 0x8, 0x6, 0x48, 0x50, 0xfc, 0x54, 0xb6, 0x83, 0xd6, 0x73, 0x28, 0xb5, 0x13, 0x3c, 0x8f}, Timestamp: time2, CameraName: "camera2", HighResImagePath: "image2-hi", LowResImagePath: "image2-lo", HighResVideoPath: "video2-hi", LowResVideoPath: "video2-lo"}},
 			time1: {{EventID: uuid.UUID{0x6, 0xb1, 0xdd, 0x33, 0x71, 0xf3, 0x58, 0x16, 0xb0, 0x92, 0x8b, 0x87, 0x6a, 0xb8, 0xfc, 0xc6}, Timestamp: time1, CameraName: "camera1", HighResImagePath: "image1-hi", LowResImagePath: "image1-lo", HighResVideoPath: "video1-hi", LowResVideoPath: "video1-lo"}},
 		},
-		store.GetAllDescendingByDateDescending(),
+		store.GetAllDescendingByDateDescending(""),
 	)
 
 	event, err := store.GetByUUID(event3.EventID)

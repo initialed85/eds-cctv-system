@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-source env.sh
-
-set -e
+set -e -x
 
 rm -fr bin || true
 mkdir -p bin || true

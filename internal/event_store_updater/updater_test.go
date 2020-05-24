@@ -37,7 +37,7 @@ func TestUpdater(t *testing.T) {
 	eventsByDate := make(map[time.Time][]event_store.Event)
 	callback := func(store event_store.Store) {
 		updated = true
-		eventsByDate = store.GetAllDescendingByDateDescending()
+		eventsByDate = store.GetAllDescendingByDateDescending("")
 	}
 
 	updater, err := New(store, callback)

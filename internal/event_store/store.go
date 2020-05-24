@@ -143,7 +143,7 @@ func (s *Store) GetAllDescending() []Event {
 	return events
 }
 
-func (s *Store) GetAllDescendingByDateDescending() map[time.Time][]Event {
+func (s *Store) GetAllDescendingByDateDescending(cameraName string) map[time.Time][]Event {
 	allEvents := s.GetAllDescending()
 
 	eventsByDate := make(map[time.Time][]Event)

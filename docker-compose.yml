@@ -34,6 +34,6 @@ services:
       - 9082:8082
       - 9083:8083
       - 9084:8084
-   restart: always
+    restart: always
     depends_on:
       - quotanizer

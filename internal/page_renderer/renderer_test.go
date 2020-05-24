@@ -56,7 +56,7 @@ func getEventStoreAndLastTimeAndNow() (event_store.Store, time.Time, time.Time) 
 func TestRenderSummary(t *testing.T) {
 	store, _, now := getEventStoreAndLastTimeAndNow()
 
-	data, err := RenderSummary("All events", store.GetAllDescendingByDateDescending(), now)
+	data, err := RenderSummary("All events", store.GetAllDescendingByDateDescending(""), now)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,7 +73,7 @@ func TestRenderSummary(t *testing.T) {
 func TestRenderPage(t *testing.T) {
 	store, time3, now := getEventStoreAndLastTimeAndNow()
 
-	data, err := RenderPage("Events", store.GetAllDescendingByDateDescending()[time3], time3, now)
+	data, err := RenderPage("Events", store.GetAllDescendingByDateDescending("")[time3], time3, now)
 	if err != nil {
 		log.Fatal(err)
 	}

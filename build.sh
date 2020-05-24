@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -e -x
 
 pushd "$(pwd)"
 function teardown() {
@@ -16,6 +16,12 @@ cd quotanizer
 git reset --hard
 git pull --all
 cd ..
+
+export CCTV_EVENTS_PATH=/tmp/cctv_events_path
+export CCTV_SEGMENTS_PATH=/tmp/cctv_segments_path
+
+mkdir -p ${CCTV_EVENTS_PATH}
+mkdir -p ${CCTV_SEGMENTS_PATH}
 
 export DOCKER_BUILDKIT=1
 if ! docker-compose build; then

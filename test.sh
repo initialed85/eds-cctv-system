@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-source env.sh
+set -e -x
 
-set -e
-
-IMAGE_NAME="${IMAGE_NAME}-test"
-CONTAINER_NAME="${CONTAINER_NAME}-test"
+IMAGE_NAME="eds-cctv-system-test"
+CONTAINER_NAME="eds-cctv-system-test"
 
 export DOCKER_BUILDKIT=1
 docker build -t "${IMAGE_NAME}" .
