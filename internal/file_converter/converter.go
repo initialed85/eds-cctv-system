@@ -20,6 +20,7 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 	arguments = append(
 		arguments,
 		[]string{
+			"-hwaccel",
 			"-l",
 			"75",
 			"--",
