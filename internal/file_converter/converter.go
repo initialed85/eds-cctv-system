@@ -21,7 +21,7 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 		arguments,
 		[]string{
 			"-l",
-			"100",
+			"75",
 			"--",
 			"ffmpeg",
 			"-y",
