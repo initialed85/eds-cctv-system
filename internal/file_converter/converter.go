@@ -21,6 +21,7 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 		arguments,
 		[]string{
 			"-hwaccel",
+			"vaapi",
 			"-l",
 			"75",
 			"--",
