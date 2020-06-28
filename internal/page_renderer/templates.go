@@ -3,25 +3,25 @@ package page_renderer
 // Common
 
 var StyleSheet = `BODY {
-    font-family: Tahoma;
-    font-size: 8pt;
-    font-weight: none;
-    text-align: center;
+	font-family: Tahoma, serif;
+	font-size: 8pt;
+	font-weight: normal;
+	text-align: center;
 }
 
 TH {
-    font-family: Tahoma;
-    font-size: 8pt;
-    font-weight: bold;
-    text-align: center;
+	font-family: Tahoma, serif;
+	font-size: 8pt;
+	font-weight: bold;
+	text-align: center;
 }
 
 TD {
-    font-family: Tahoma;
-    font-size: 8pt;
-    font-weight: none;
-    text-align: center;
-    border: 1px solid gray; 
+	font-family: Tahoma, serif;
+	font-size: 8pt;
+	font-weight: normal;
+	text-align: center;
+	border: 1px solid gray; 
 }`
 
 // For the summary view
@@ -33,9 +33,10 @@ var SummaryTableRowHTML = `
 	</tr>
 `
 
-var SummaryHTML = `</html>
+var SummaryHTML = `<html>
 <head>
 <title>{{.Title}} as at {{.Now}}</title>
+
 <style type="text/css">
 {{.StyleSheet}}
 </style>
@@ -45,6 +46,7 @@ var SummaryHTML = `</html>
 <h2>{{.Title}} as at {{.Now}}</h2>
 
 <center>
+
 <table width="90%">
 
 	<tr>
@@ -53,15 +55,23 @@ var SummaryHTML = `</html>
 	</tr>
 {{.TableRows}}
 </table>
-<center>
 
+</center>
 </body>
 </html>`
 
 // For the drill-down view
 
+var JavaScript = `function toggleCamera(cameraName) {
+	Array.from(document.getElementsByClassName(cameraName)).map((x) => {
+		x.style.display = x.style.display === 'none' ? '' : 'none'
+	})
+}`
+
+var CheckBoxHTML = `{{.CameraName}} <input type="checkbox" checked="true" onclick="toggleCamera('{{.CameraName}}')"/>`
+
 var PageTableRowHTML = `
-	<tr>
+	<tr class="{{.CameraName}}">
 		<td>{{.EventID}}</td>
 		<td>{{.Timestamp}}</td>
 		<td>{{.CameraName}}</td>
@@ -70,20 +80,30 @@ var PageTableRowHTML = `
 	</tr>
 `
 
-var PageHTML = `</html>
+var PageHTML = `<html>
 <head>
 <title>{{.Title}} for {{.EventsDate}} as at {{.Now}}</title>
+
 <style type="text/css">
 {{.StyleSheet}}
 </style>
+
+<script>
+{{.JavaScript}}
+</script>
 </head>
 
 <body>
 <h1>{{.Title}} for {{.EventsDate}} as at {{.Now}}</h1>
 
 <center>
-<table width="90%">
 
+{{.CheckBoxes}}
+
+<br />
+<br />
+
+<table width="90%">
 	<tr>
 		<th>Event ID</th>
 		<th>Timestamp</th>
@@ -93,7 +113,7 @@ var PageHTML = `</html>
 	</tr>
 {{.TableRows}}
 </table>
-<center>
 
+<center>
 </body>
 </html>`

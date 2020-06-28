@@ -1,0 +1,5 @@
+temp/**
+venv/**
+quotanizer/**
+.pytest_cache/**
+bin/**

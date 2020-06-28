@@ -15,8 +15,8 @@ type errorResponse struct {
 }
 
 type API struct {
-	store event_store.Store
-	api          *api.API
+	store *event_store.Store
+	api   *api.API
 }
 
 func New(path string, port int) *API {

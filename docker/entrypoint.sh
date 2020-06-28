@@ -52,13 +52,13 @@ fi
 # echo ""
 
 # ---- recreation stuff
-echo "recreating event store"
-event_store_rebuilder_for_events -r ${EVENT_ROOT} -j ${EVENT_STORE}
-echo ""
+# echo "recreating event store"
+# event_store_rebuilder_for_events -r ${EVENT_ROOT} -j ${EVENT_STORE}
+# echo ""
 
-echo "recreating segment store"
-event_store_rebuilder_for_segments -r ${SEGMENT_ROOT} -j ${SEGMENT_STORE}
-echo ""
+# echo "recreating segment store"
+# event_store_rebuilder_for_segments -r ${SEGMENT_ROOT} -j ${SEGMENT_STORE}
+# echo ""
 
 # ---- start services
 echo "starting supervisord"

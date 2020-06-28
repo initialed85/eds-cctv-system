@@ -6,7 +6,7 @@ import (
 )
 
 type Deduplicator struct {
-	sourceStore, destinationStore event_store.Store
+	sourceStore, destinationStore *event_store.Store
 }
 
 func New(sourcePath, destinationPath string) Deduplicator {

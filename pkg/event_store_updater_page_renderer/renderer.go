@@ -87,8 +87,8 @@ func truncatePaths(events []event_store.Event) []event_store.Event {
 
 type Renderer struct {
 	summaryTitle, title string
-	store               event_store.Store
-	updater             event_store_updater.Updater
+	store               *event_store.Store
+	updater             *event_store_updater.Updater
 	renderPath          string
 }
 
@@ -110,12 +110,12 @@ func New(summaryTitle, title, storePath, renderPath string) (Renderer, error) {
 		return Renderer{}, err
 	}
 
-	r.updater = updater
+	r.updater = &updater
 
 	return r, nil
 }
 
-func (r *Renderer) callback(store event_store.Store) {
+func (r *Renderer) callback(store *event_store.Store) {
 	err := cleanFolder(r.renderPath)
 	if err != nil {
 		log.Printf("failed to call cleanFolder because: %v", err)

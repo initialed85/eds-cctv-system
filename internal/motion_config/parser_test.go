@@ -14,7 +14,7 @@ func TestParseFile(t *testing.T) {
 
 	assert.Equal(
 		t,
-		Config{CameraName: "", CameraId: 0, NetCamURL: "", Width: 1920, Height: 1080,},
+		Config{CameraName: "", CameraId: 0, NetCamURL: "", Width: 1920, Height: 1080},
 		config,
 	)
 
@@ -25,7 +25,7 @@ func TestParseFile(t *testing.T) {
 
 	assert.Equal(
 		t,
-		Config{CameraName: "Driveway", CameraId: 101, NetCamURL: "rtsp://192.168.137.31:554/Streaming/Channels/101/", Width: 0, Height: 0,},
+		Config{CameraName: "Driveway", CameraId: 101, NetCamURL: "rtsp://192.168.137.31:554/Streaming/Channels/101/", Width: 0, Height: 0},
 		config,
 	)
 }

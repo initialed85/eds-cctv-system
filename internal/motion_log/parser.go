@@ -27,7 +27,7 @@ const (
 )
 
 func GetCameraNumber(line string) (int64, error) {
-	cameraNumber, err := strconv.ParseInt(strings.Split(strings.Split(strings.Split(line, "] [", )[0], ":", )[0], "[")[1], 10, 64)
+	cameraNumber, err := strconv.ParseInt(strings.Split(strings.Split(strings.Split(line, "] [")[0], ":")[0], "[")[1], 10, 64)
 	if err != nil {
 		return 0, err
 	}
@@ -36,7 +36,7 @@ func GetCameraNumber(line string) (int64, error) {
 }
 
 func GetCameraName(line string) string {
-	return strings.TrimSpace(strings.Split(strings.Split(line, "] [", )[0], ":", )[2])
+	return strings.TrimSpace(strings.Split(strings.Split(line, "] [")[0], ":")[2])
 }
 
 func GetCameraEventNumberFromEndOfLine(line string) (int64, error) {

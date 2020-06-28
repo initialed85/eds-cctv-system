@@ -15,13 +15,13 @@ type Store struct {
 	mu     sync.Mutex
 }
 
-func NewStore(path string) Store {
+func NewStore(path string) *Store {
 	e := Store{
 		path:   path,
 		events: make(map[uuid.UUID]Event),
 	}
 
-	return e
+	return &e
 }
 
 func (s *Store) GetPath() string {

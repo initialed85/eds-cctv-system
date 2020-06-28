@@ -30,7 +30,7 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 			"-s",
 			fmt.Sprintf("%vx%v", width, height),
 			destinationPath,
-		}...
+		}...,
 	)
 
 	return common.RunCommand(

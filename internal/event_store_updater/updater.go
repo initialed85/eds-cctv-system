@@ -10,12 +10,12 @@ import (
 )
 
 type Updater struct {
-	store    event_store.Store
-	callback func(event_store.Store)
+	store    *event_store.Store
+	callback func(*event_store.Store)
 	watcher  file_watcher.Watcher
 }
 
-func New(store event_store.Store, callback func(event_store.Store)) (Updater, error) {
+func New(store *event_store.Store, callback func(*event_store.Store)) (Updater, error) {
 	u := Updater{
 		store:    store,
 		callback: callback,

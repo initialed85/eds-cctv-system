@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/initialed85/eds-cctv-system/internal/event_store"
 	"sort"
+	"strings"
 	"text/template"
 	"time"
 )
@@ -48,7 +49,7 @@ func renderSummaryTableRows(eventsByDate map[time.Time][]event_store.Event) (str
 		}
 	}
 
-	return b.String(), nil
+	return strings.TrimSpace(b.String()), nil
 }
 
 type SummarySeed struct {
@@ -85,7 +86,48 @@ func RenderSummary(title string, eventsByDate map[time.Time][]event_store.Event,
 		return "", err
 	}
 
-	return b.String(), nil
+	return strings.TrimSpace(b.String()), nil
+}
+
+type CheckBoxSeed struct {
+	CameraName string
+}
+
+func renderCheckBoxes(events []event_store.Event) (string, error) {
+	cameraNamesMap := make(map[string]bool)
+	for _, event := range events {
+		cameraNamesMap[event.CameraName] = true
+	}
+
+	cameraNames := make([]string, 0)
+	for cameraName := range cameraNamesMap {
+		cameraNames = append(cameraNames, cameraName)
+	}
+
+	sort.Strings(cameraNames)
+
+	b := bytes.Buffer{}
+	for _, cameraName := range cameraNames {
+		t := template.New("CheckBoxSeed")
+
+		t, err := t.Parse(CheckBoxHTML)
+		if err != nil {
+			return "", err
+		}
+
+		checkBoxSeed := CheckBoxSeed{
+			CameraName: cameraName,
+		}
+
+		err = t.Execute(&b, checkBoxSeed)
+		if err != nil {
+			return "", nil
+		}
+
+		b.WriteString("\n")
+	}
+
+	return strings.TrimSpace(b.String()), nil
 }
 
 type PageTableRowSeed struct {
@@ -126,7 +168,7 @@ func renderPageTableRows(events []event_store.Event) (string, error) {
 		}
 	}
 
-	return b.String(), nil
+	return strings.TrimRight(b.String(), " \r\n\t"), nil
 }
 
 type PageSeed struct {
@@ -134,6 +176,8 @@ type PageSeed struct {
 	EventsDate string
 	Now        string
 	StyleSheet string
+	JavaScript string
+	CheckBoxes string
 	TableRows  string
 }
 
@@ -147,6 +191,11 @@ func RenderPage(title string, events []event_store.Event, eventsDate, now time.T
 
 	b := bytes.Buffer{}
 
+	checkBoxes, err := renderCheckBoxes(events)
+	if err != nil {
+		return "", err
+	}
+
 	tableRows, err := renderPageTableRows(events)
 	if err != nil {
 		return "", err
@@ -157,6 +206,8 @@ func RenderPage(title string, events []event_store.Event, eventsDate, now time.T
 		EventsDate: eventsDate.Format("2006-01-02"),
 		Now:        now.Format("2006-01-02 15:04:05"),
 		StyleSheet: StyleSheet,
+		JavaScript: JavaScript,
+		CheckBoxes: checkBoxes,
 		TableRows:  tableRows,
 	}
 
@@ -165,5 +216,5 @@ func RenderPage(title string, events []event_store.Event, eventsDate, now time.T
 		return "", err
 	}
 
-	return b.String(), nil
+	return strings.TrimSpace(b.String()), nil
 }
