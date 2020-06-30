@@ -1,10 +1,8 @@
-#!/usr/bin/python3
-
 import datetime
 from pathlib import Path
 from typing import Optional, Tuple
 
-from common import _IMAGE_SUFFIXES, _PERMITTED_EXTENSIONS, PathDetails, rebuild_event_store
+from .common import _IMAGE_SUFFIXES, _PERMITTED_EXTENSIONS, PathDetails, rebuild_event_store
 
 
 def parse_path(path: Path, tzinfo: datetime.tzinfo) -> Optional[PathDetails]:
