@@ -83,4 +83,6 @@ COPY utils/common.py /srv/utils/common.py
 COPY utils/event_store_rebuilder_for_events.py /srv/utils/event_store_rebuilder_for_events.py
 COPY utils/event_store_rebuilder_for_segments.py /srv/utils/event_store_rebuilder_for_segments.py
 
+WORKDIR /srv/
+
 ENTRYPOINT ["/srv/entrypoint.sh"]
