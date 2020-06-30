@@ -13,8 +13,6 @@ func RecordSegments(netCamURL, destinationPath, cameraName string, duration int)
 
 	return common.RunBackgroundProcess(
 		"ffmpeg",
-		"-hwaccel",
-		"vaapi",
 		"-rtsp_transport",
 		"tcp",
 		"-i",
