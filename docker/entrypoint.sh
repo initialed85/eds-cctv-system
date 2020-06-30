@@ -6,7 +6,7 @@
 #   exit 1
 # fi
 
-set -e
+set -e -x
 
 # ---- variables
 EVENT_ROOT=/srv/target_dir/events
