@@ -51,20 +51,14 @@ fi
 # event_store_deduplicator -sourcePath ${SEGMENT_STORE_BACKUP} -destinationPath ${SEGMENT_STORE}
 # echo ""
 
-pushd "$(pwd)"
-
-cd /usr/local/bin/
-
 # ---- recreation stuff
 echo "recreating event store"
-python -m event_store_rebuilder_for_events -r ${EVENT_ROOT} -j ${EVENT_STORE}
+python -m utils.event_store_rebuilder_for_events -r ${EVENT_ROOT} -j ${EVENT_STORE}
 echo ""
 
 echo "recreating segment store"
-python -m event_store_rebuilder_for_segments -r ${SEGMENT_ROOT} -j ${SEGMENT_STORE}
+python -m utils.event_store_rebuilder_for_segments -r ${SEGMENT_ROOT} -j ${SEGMENT_STORE}
 echo ""
-
-popd
 
 # ---- start services
 echo "starting supervisord"
