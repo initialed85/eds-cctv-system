@@ -2,7 +2,11 @@
 
 This repo contains some Go code that integrates the following services into a rudimentary CCTV system:
 
-NOTE: As of 1 Jul 2020 `linuxserver/ffmpeg` is used as the base Docker image and so I can't promise this will work well on a machine withour an Nvidia GPU.
+As of 1 Jul 2020 `linuxserver/ffmpeg` is used as the base Docker image and so I can't promise this will work well on a machine withour an Nvidia GPU.
+
+Also for my Quadro P400 (and probably oher consumer Nvidia GPUs), I had to follow the instructions at https://github.com/keylase/nvidia-patch to unlock the number of encoding sessions.
+
+TODO: Use the trick that URL to patch the encoding session limitation without needing the Docker host to do so.
 
 ## Overview
 
