@@ -16,7 +16,7 @@ func RecordSegments(netCamURL, destinationPath, cameraName string, duration int)
 		"-hwaccel",
 		"cuvid",
 		"-c:v",
-		"h264_nvenc",
+		"nvenc_h264",
 		"-rtsp_transport",
 		"tcp",
 		"-i",
