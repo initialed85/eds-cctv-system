@@ -13,7 +13,7 @@ RUN ./configure --prefix=/
 RUN make
 RUN make install
 
-FROM willprice/nvidia-ffmpeg AS run
+FROM willprice/nvidia-ffmpeg AS run_base
 
 ENV TZ Australia/Perth
 ENV DEBIAN_FRONTEND noninteractive
@@ -42,7 +42,7 @@ RUN go build -v -o event_store_updater_page_renderer cmd/event_store_updater_pag
 RUN go build -v -o static_file_server cmd/static_file_server/main.go
 RUN go build -v -o event_store_deduplicator cmd/event_store_deduplicator/main.go
 
-FROM run AS run
+FROM run_base AS run
 
 # router
 EXPOSE 80
