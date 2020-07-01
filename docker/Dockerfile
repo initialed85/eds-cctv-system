@@ -13,6 +13,19 @@ RUN ./configure --prefix=/
 RUN make
 RUN make install
 
+FROM willprice/nvidia-ffmpeg AS run
+
+ENV TZ Australia/Perth
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y \
+    tzdata supervisor imagemagick nginx logrotate python3-pip cpulimit x264 \
+    libmicrohttpd-dev libjpeg8-dev libavutil-dev libavformat-dev libavcodec-dev libswscale-dev libavdevice-dev
+
+RUN dpkg-reconfigure -f noninteractive tzdata
+
+RUN pip3 install python-dateutil
+
 FROM golang:1.13 AS go_build
 
 WORKDIR /srv/
@@ -29,18 +42,7 @@ RUN go build -v -o event_store_updater_page_renderer cmd/event_store_updater_pag
 RUN go build -v -o static_file_server cmd/static_file_server/main.go
 RUN go build -v -o event_store_deduplicator cmd/event_store_deduplicator/main.go
 
-FROM willprice/nvidia-ffmpeg AS run
-
-ENV TZ Australia/Perth
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && apt-get install -y \
-    tzdata supervisor imagemagick nginx logrotate python3-pip cpulimit x264 \
-    libmicrohttpd-dev libjpeg8-dev libavutil-dev libavformat-dev libavcodec-dev libswscale-dev libavdevice-dev
-
-RUN dpkg-reconfigure -f noninteractive tzdata
-
-RUN pip3 install python-dateutil
+FROM run AS run
 
 # router
 EXPOSE 80
