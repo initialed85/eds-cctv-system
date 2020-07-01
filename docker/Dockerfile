@@ -1,4 +1,9 @@
-FROM linuxserver/ffmpeg AS motion_build
+FROM linuxserver/ffmpeg AS base
+
+RUN apt-get update && apt-get upgrade -y libfontconfig1 && apt-get install -y --reinstall \
+    libfontconfig1 libfontconfig1-dev fontconfig-config
+
+FROM base AS motion_build
 
 RUN apt-get update && apt-get install -y \
     git autoconf automake pkgconf libtool build-essential libzip-dev gettext autopoint \
@@ -13,7 +18,7 @@ RUN ./configure --prefix=/
 RUN make
 RUN make install
 
-FROM linuxserver/ffmpeg AS run_base
+FROM base AS run_base
 
 ENV TZ Australia/Perth
 ENV DEBIAN_FRONTEND noninteractive
