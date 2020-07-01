@@ -45,9 +45,9 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 		"-i",
 		sourcePath,
 		"-s",
+		fmt.Sprintf("%vx%v", width, height),
 		"-c:v",
 		"h264_nvenc",
-		fmt.Sprintf("%vx%v", width, height),
 		destinationPath,
 	}
 
