@@ -25,7 +25,7 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 			"--",
 			"ffmpeg",
 			"-hwaccel",
-			"cuda",
+			"cuvid",
 			"-y",
 			"-i",
 			sourcePath,
