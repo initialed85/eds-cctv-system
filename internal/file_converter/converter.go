@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/initialed85/eds-cctv-system/internal/common"
 	"log"
-	"runtime"
 )
 
 // ffmpeg -y -i input.mp4 -s 640x360 output.mp4
@@ -13,32 +12,50 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 
 	arguments := make([]string, 0)
 
-	if runtime.GOOS != "darwin" {
-		arguments = append(arguments, "-f")
+	//if runtime.GOOS != "darwin" {
+	//	arguments = append(arguments, "-f")
+	//}
+
+	//arguments = append(
+	//	arguments,
+	//	[]string{
+	//		"-l",
+	//		"75",
+	//		"--",
+	//		"ffmpeg",
+	//		"-hwaccel",
+	//		"cuda",
+	//		"-c:v",
+	//		"h264_cuvid",
+	//		"-y",
+	//		"-i",
+	//		sourcePath,
+	//		"-s",
+	//		fmt.Sprintf("%vx%v", width, height),
+	//		destinationPath,
+	//	}...,
+	//)
+
+	arguments = []string{
+		"-hwaccel",
+		"cuda",
+		"-c:v",
+		"h264_cuvid",
+		"-y",
+		"-i",
+		sourcePath,
+		"-s",
+		fmt.Sprintf("%vx%v", width, height),
+		destinationPath,
 	}
 
-	arguments = append(
-		arguments,
-		[]string{
-			"-l",
-			"75",
-			"--",
-			"ffmpeg",
-			"-hwaccel",
-			"cuda",
-			"-c:v",
-			"h264_cuvid",
-			"-y",
-			"-i",
-			sourcePath,
-			"-s",
-			fmt.Sprintf("%vx%v", width, height),
-			destinationPath,
-		}...,
-	)
+	//return common.RunCommand(
+	//	"cpulimit",
+	//	arguments...,
+	//)
 
 	return common.RunCommand(
-		"cpulimit",
+		"ffmpeg",
 		arguments...,
 	)
 }
