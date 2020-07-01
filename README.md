@@ -2,7 +2,7 @@
 
 This repo contains some Go code that integrates the following services into a rudimentary CCTV system:
 
-NOTE: As of 1 Jul 2020 `willprice/nvidia-ffmpeg` is used as the base Docker image and so I can't promise this will work well on a machine withour an Nvidia GPU.
+NOTE: As of 1 Jul 2020 `linuxserver/ffmpeg` is used as the base Docker image and so I can't promise this will work well on a machine withour an Nvidia GPU.
 
 ## Overview
 

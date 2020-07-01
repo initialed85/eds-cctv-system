@@ -1,4 +1,4 @@
-FROM willprice/nvidia-ffmpeg AS motion_build
+FROM linuxserver/ffmpeg AS motion_build
 
 RUN apt-get update && apt-get install -y \
     git autoconf automake pkgconf libtool build-essential libzip-dev gettext autopoint \
@@ -13,7 +13,7 @@ RUN ./configure --prefix=/
 RUN make
 RUN make install
 
-FROM willprice/nvidia-ffmpeg AS run_base
+FROM linuxserver/ffmpeg AS run_base
 
 ENV TZ Australia/Perth
 ENV DEBIAN_FRONTEND noninteractive
