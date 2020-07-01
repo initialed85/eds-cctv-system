@@ -27,7 +27,7 @@ func ConvertVideo(sourcePath, destinationPath string, width, height int) (string
 			"-hwaccel",
 			"cuvid",
 			"-c:v",
-			"nvenc_h264",
+			"h264_nvenc",
 			"-y",
 			"-i",
 			sourcePath,
