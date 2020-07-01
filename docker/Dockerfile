@@ -1,8 +1,8 @@
-FROM ubuntu:18.04 AS motion_build
+FROM willprice/nvidia-ffmpeg AS motion_build
 
 RUN apt-get update && apt-get install -y \
-    autoconf automake pkgconf libtool libjpeg8-dev build-essential libzip-dev gettext libmicrohttpd-dev \
-    libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libavdevice-dev git autopoint
+    git autoconf automake pkgconf libtool build-essential libzip-dev gettext autopoint \
+    libmicrohttpd-dev libjpeg8-dev libavutil-dev libavformat-dev libavcodec-dev libswscale-dev libavdevice-dev
 
 WORKDIR /srv/
 RUN git clone https://github.com/Motion-Project/motion.git
@@ -29,14 +29,14 @@ RUN go build -v -o event_store_updater_page_renderer cmd/event_store_updater_pag
 RUN go build -v -o static_file_server cmd/static_file_server/main.go
 RUN go build -v -o event_store_deduplicator cmd/event_store_deduplicator/main.go
 
-FROM ubuntu:18.04 AS run
+FROM willprice/nvidia-ffmpeg AS run
 
 ENV TZ Australia/Perth
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get install -y \
-    tzdata supervisor libjpeg8-dev libmicrohttpd-dev libavformat-dev libavcodec-dev libavutil-dev \
-    libswscale-dev libavdevice-dev ffmpeg x264 imagemagick nginx logrotate python3-pip cpulimit
+    tzdata supervisor imagemagick nginx logrotate python3-pip cpulimit x264 \
+    libmicrohttpd-dev libjpeg8-dev libavutil-dev libavformat-dev libavcodec-dev libswscale-dev libavdevice-dev
 
 RUN dpkg-reconfigure -f noninteractive tzdata
 
