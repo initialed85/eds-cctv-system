@@ -16,23 +16,23 @@ SEGMENT_ROOT=/srv/target_dir/segments
 SEGMENT_STORE=${SEGMENT_ROOT}/persistence.jsonl
 SEGMENT_STORE_BACKUP=${SEGMENT_STORE}.old
 
-if [[ -f ${EVENT_STORE} ]]; then
-  echo "backing up events store"
-  cp -frv ${EVENT_STORE} ${EVENT_STORE_BACKUP}
-  cp -frv ${EVENT_STORE} "${EVENT_STORE_BACKUP}_$(date)"
-  echo ""
-else
-  echo "cannot backup events store, it doesn't yet exist"
-fi
+# if [[ -f ${EVENT_STORE} ]]; then
+#   echo "backing up events store"
+#   cp -frv ${EVENT_STORE} ${EVENT_STORE_BACKUP}
+#   cp -frv ${EVENT_STORE} "${EVENT_STORE_BACKUP}_$(date)"
+#   echo ""
+# else
+#   echo "cannot backup events store, it doesn't yet exist"
+# fi
 
-if [[ -f ${SEGMENT_STORE} ]]; then
-  echo "backing up segments store"
-  cp -frv ${SEGMENT_STORE} ${SEGMENT_STORE_BACKUP}
-  cp -frv ${SEGMENT_STORE} "${SEGMENT_STORE_BACKUP}_$(date)"
-  echo ""
-else
-  echo "cannot backup segments store, it doesn't yet exist"
-fi
+# if [[ -f ${SEGMENT_STORE} ]]; then
+#   echo "backing up segments store"
+#   cp -frv ${SEGMENT_STORE} ${SEGMENT_STORE_BACKUP}
+#   cp -frv ${SEGMENT_STORE} "${SEGMENT_STORE_BACKUP}_$(date)"
+#   echo ""
+# else
+#   echo "cannot backup segments store, it doesn't yet exist"
+# fi
 
 # ---- deduplication stuff
 # echo "clearing original events"
